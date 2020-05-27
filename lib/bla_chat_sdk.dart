@@ -12,6 +12,17 @@ import 'BlaConstants.dart';
 import 'BlaUtils.dart';
 import 'BlaUserPresence.dart';
 
+// Message listener
+typedef onNewMessage = Function(BlaMessage message);
+typedef onUpdateMessage = Function(BlaMessage message);
+typedef onDeleteMessage = Function(BlaMessage message);
+typedef onUserSeen = Function(BlaMessage message, BlaUser user, int seenAt);
+typedef onUserReceive = Function(BlaMessage message, BlaUser user, int receivedAt);
+
+//Presence listener
+typedef onUpdate = Function(List<BlaUserPresence> users);
+
+//Channel listener
 typedef onNewChannel = Function(BlaChannel channel);
 typedef onUpdateChannel = Function(BlaChannel channel);
 typedef onDeleteChannel = Function(BlaChannel channel);
@@ -22,6 +33,7 @@ typedef onMemberJoin = Function(BlaChannel channel, BlaUser user);
 typedef onMemberLeave = Function(BlaChannel channel, BlaUser user);
 
 class BlaChatSdk {
+
   static const MethodChannel _channel =
       const MethodChannel('bla_chat_sdk');
 
@@ -104,6 +116,8 @@ class BlaChatSdk {
       });
       Map valueMap = json.decode(data);
       bool isSuccess = valueMap["isSuccess"];
+      print("is success " + isSuccess.toString());
+      print("result " + valueMap["result"]);
       if (isSuccess) {
         List<dynamic> result = json.decode(valueMap["result"]);
 //      BlaChannel channel = BlaChannel.fromJson(result[0]);
@@ -120,7 +134,8 @@ class BlaChatSdk {
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
     List<dynamic> result = json.decode(valueMap["result"]);
-//      BlaChannel channel = BlaChannel.fromJson(result[0]);
+    print("is success " + isSuccess.toString());
+    print("result " + valueMap["result"]);
     return [];
   }
 
@@ -131,7 +146,8 @@ class BlaChatSdk {
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
     List<dynamic> result = json.decode(valueMap["result"]);
-//      BlaChannel channel = BlaChannel.fromJson(result[0]);
+    print("is success " + isSuccess.toString());
+    print("result " + valueMap["result"]);
     return [];
   }
 
@@ -144,7 +160,8 @@ class BlaChatSdk {
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
     List<dynamic> result = json.decode(valueMap["result"]);
-//      BlaChannel channel = BlaChannel.fromJson(result[0]);
+    print("is success " + isSuccess.toString());
+    print("result " + valueMap["result"]);
     return [];
   }
 
@@ -157,7 +174,8 @@ class BlaChatSdk {
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
     List<dynamic> result = json.decode(valueMap["result"]);
-//      BlaChannel channel = BlaChannel.fromJson(result[0]);
+    print("is success " + isSuccess.toString());
+    print("result " + valueMap["result"]);
     return null;
   }
 
@@ -171,7 +189,8 @@ class BlaChatSdk {
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
     List<dynamic> result = json.decode(valueMap["result"]);
-//      BlaChannel channel = BlaChannel.fromJson(result[0]);
+    print("is success " + isSuccess.toString());
+    print("result " + valueMap["result"]);
     return null;
   }
 
@@ -185,7 +204,8 @@ class BlaChatSdk {
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
     List<dynamic> result = json.decode(valueMap["result"]);
-//      BlaChannel channel = BlaChannel.fromJson(result[0]);
+    print("is success " + isSuccess.toString());
+    print("result " + valueMap["result"]);
     return null;
   }
 
@@ -196,7 +216,8 @@ class BlaChatSdk {
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
     List<dynamic> result = json.decode(valueMap["result"]);
-//      BlaChannel channel = BlaChannel.fromJson(result[0]);
+    print("is success " + isSuccess.toString());
+    print("result " + valueMap["result"]);
     return true;
   }
 
