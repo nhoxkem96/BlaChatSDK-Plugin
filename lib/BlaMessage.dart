@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'BlaMessageType.dart';
 import 'BlaUser.dart';
+import 'BlaUtils.dart';
 
 class BlaMessage {
   String id;
@@ -19,12 +20,15 @@ class BlaMessage {
     id = json["id"];
     channelID = json["channelID"];
     content = json["content"];
-    id = json["id"];
-    id = json["id"];
-    id = json["id"];
-    id = json["id"];
-    id = json["id"];
-    id = json["id"];
-
+    type = BlaUtils.initBlaMessageType(json["type"]);
+    customData = json["customData"];
+    createdAt = DateTime.fromMicrosecondsSinceEpoch(json["createdAt"]);
+    updatedAt = json["updatedAt"] != null ? DateTime.fromMicrosecondsSinceEpoch(json["updatedAt"]) : DateTime.fromMicrosecondsSinceEpoch(json["createdAt"]);
+    sentAt = DateTime.fromMicrosecondsSinceEpoch(json["sentAt"]);
+    author = BlaUser.fromJSON(json["author"]);
+    List<dynamic> listReceivedBy = json["receivedBy"];
+    receivedBy = listReceivedBy.map((item) => BlaUser.fromJSON(item)).toList();
+    List<dynamic> listSeenBy = json["seenBy"];
+    seenBy = listSeenBy.map((item) => BlaUser.fromJSON(item)).toList();
   }
 }

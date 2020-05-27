@@ -5,6 +5,28 @@ import 'BlaPresenceState.dart';
 import 'EventType.dart';
 
 class BlaUtils {
+
+  static BlaChannelType initBlaChannelTyp(int value) {
+    switch (value) {
+      default:
+        return BlaChannelType.GROUP;
+    }
+  }
+
+  static BlaMessageType initBlaMessageType(int value) {
+    switch (value) {
+      default:
+        return BlaMessageType.TEXT;
+    }
+  }
+
+  static BlaPresenceState initPresenceState(int value) {
+    switch (value) {
+      default:
+        return BlaPresenceState.OFFFLINE;
+    }
+  }
+
   static int getChannelTypeRawValue(BlaChannelType type) {
     switch (type) {
       case BlaChannelType.DIRECT:

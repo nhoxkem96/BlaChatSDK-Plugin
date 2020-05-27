@@ -34,28 +34,40 @@ typedef onMemberLeave = Function(BlaChannel channel, BlaUser user);
 
 class BlaChatSdk {
 
+  static final BlaChatSdk _singleton = BlaChatSdk._internal();
+
+  factory BlaChatSdk() {
+    return _singleton;
+  }
+
+  BlaChatSdk._internal();
+
+  static BlaChatSdk get instance {
+    return _singleton;
+  }
+
+
   static const MethodChannel _channel =
       const MethodChannel('bla_chat_sdk');
 
-  static Future<String> get platformVersion async {
+  Future<String> get platformVersion async {
       final String version = await _channel.invokeMethod('getPlatformVersion');
       return version;
   }
 
-  static Future<bool> initBlaChatSDK(String userId, String token) async {
+  Future<bool> initBlaChatSDK(String userId, String token) async {
       try {
         dynamic data = await _channel.invokeMethod(BlaConstants.INIT_BLACHATSDK, <String, dynamic>{
           'userId': userId,
           'token': token,
         });
-        print("data " + data);
         return true;
       } catch (e) {
         return false;
       }
   }
 
-  static Future<bool> addMessageListener() async {
+  Future<bool> addMessageListener() async {
     try {
       dynamic data = await _channel.invokeMethod(BlaConstants.ADD_MESSSAGE_LISTENER);
       return true;
@@ -64,7 +76,7 @@ class BlaChatSdk {
     }
   }
 
-  static Future<bool> removeMessageListener() async {
+  Future<bool> removeMessageListener() async {
     try {
       dynamic data = await _channel.invokeMethod(BlaConstants.REMOVE_MESSSAGE_LISTENER);
       return true;
@@ -73,7 +85,7 @@ class BlaChatSdk {
     }
   }
 
-  static Future<bool> addChannelListener() async {
+  Future<bool> addChannelListener() async {
     try {
       dynamic data = await _channel.invokeMethod(BlaConstants.ADD_CHANNEL_LISTENER);
       return true;
@@ -82,7 +94,7 @@ class BlaChatSdk {
     }
   }
 
-  static Future<bool> removeChannelListener() async {
+  Future<bool> removeChannelListener() async {
     try {
       dynamic data = await _channel.invokeMethod(BlaConstants.REMOVE_CHANNEL_LISTENER);
       return true;
@@ -91,7 +103,7 @@ class BlaChatSdk {
     }
   }
 
-  static Future<bool> addPresenceListener() async {
+  Future<bool> addPresenceListener() async {
     try {
       dynamic data = await _channel.invokeMethod(BlaConstants.ADD_PRESENCE_LISTENER);
       return true;
@@ -100,7 +112,7 @@ class BlaChatSdk {
     }
   }
 
-  static Future<bool> removePresenceListener() async {
+  Future<bool> removePresenceListener() async {
     try {
       dynamic data = await _channel.invokeMethod(BlaConstants.REMOVE_PRESENCE_LISTENER);
       return true;
@@ -109,25 +121,23 @@ class BlaChatSdk {
     }
   }
 
-  static Future<List<BlaChannel>> getChannels(String lastId, int limit) async {
+  Future<List<BlaChannel>> getChannels(String lastId, int limit) async {
       dynamic data = await _channel.invokeMethod(BlaConstants.GET_CHANNELS, <String, dynamic>{
         'lastId': lastId,
         'limit': limit,
       });
       Map valueMap = json.decode(data);
       bool isSuccess = valueMap["isSuccess"];
-      print("is success " + isSuccess.toString());
-      print("result " + valueMap["result"]);
       if (isSuccess) {
         List<dynamic> result = json.decode(valueMap["result"]);
-//      BlaChannel channel = BlaChannel.fromJson(result[0]);
-        return [];
+        List<BlaChannel> channels = result.map((item) => BlaChannel.fromJson(item)).toList();
+        return channels;
       } else {
         throw valueMap["message"];
       }
   }
 
-  static Future<List<BlaUser>> getUsersInChannel(String channelId) async {
+  Future<List<BlaUser>> getUsersInChannel(String channelId) async {
     dynamic data = await _channel.invokeMethod(BlaConstants.GET_USERS_IN_CHANNEL, <String, dynamic>{
       'channelId': channelId,
     });
@@ -139,7 +149,7 @@ class BlaChatSdk {
     return [];
   }
 
-  static Future<List<BlaUser>> getUsers(List<String> userIds) async {
+  Future<List<BlaUser>> getUsers(List<String> userIds) async {
     dynamic data = await _channel.invokeMethod(BlaConstants.GET_USERS, <String, dynamic>{
       'userIds': userIds,
     });
@@ -151,7 +161,7 @@ class BlaChatSdk {
     return [];
   }
 
-  static Future<List<BlaMessage>> getMessages(String channelId, String lastId, int limit) async {
+  Future<List<BlaMessage>> getMessages(String channelId, String lastId, int limit) async {
     dynamic data = await _channel.invokeMethod(BlaConstants.GET_MESSAGES, <String, dynamic>{
       'channelId': channelId,
       'lastId': lastId,
@@ -165,7 +175,7 @@ class BlaChatSdk {
     return [];
   }
 
-  static Future<BlaChannel> createChannel(String name, List<String> userIds, BlaChannelType type) async {
+  Future<BlaChannel> createChannel(String name, List<String> userIds, BlaChannelType type) async {
     dynamic data = await _channel.invokeMethod(BlaConstants.CREATE_CHANNEL, <String, dynamic>{
       'name': name,
       'userIds': userIds,
@@ -180,7 +190,7 @@ class BlaChatSdk {
   }
 
   // PENDING
-  static Future<BlaChannel> updateChannel(BlaChannel channel) async {
+  Future<BlaChannel> updateChannel(BlaChannel channel) async {
     dynamic data = await _channel.invokeMethod(BlaConstants.CREATE_CHANNEL, <String, dynamic>{
 //      'name': name,
 //      'userIds': userIds,
@@ -195,7 +205,7 @@ class BlaChatSdk {
   }
 
   //PENDING
-  static Future<BlaChannel> deleteChannel(String name, List<String> userIds, BlaChannelType type) async {
+  Future<BlaChannel> deleteChannel(String name, List<String> userIds, BlaChannelType type) async {
     dynamic data = await _channel.invokeMethod(BlaConstants.CREATE_CHANNEL, <String, dynamic>{
       'name': name,
       'userIds': userIds,
@@ -209,7 +219,7 @@ class BlaChatSdk {
     return null;
   }
 
-  static Future<bool> sendStartTyping(String channelId) async {
+  Future<bool> sendStartTyping(String channelId) async {
     dynamic data = await _channel.invokeMethod(BlaConstants.SEND_START_TYPING, <String, dynamic>{
       'channelId': channelId,
     });
@@ -221,7 +231,7 @@ class BlaChatSdk {
     return true;
   }
 
-  static Future<bool> sendStopTyping(String channelId) async {
+  Future<bool> sendStopTyping(String channelId) async {
     dynamic data = await _channel.invokeMethod(BlaConstants.SEND_STOP_TYPING, <String, dynamic>{
       'channelId': channelId,
     });
@@ -232,7 +242,7 @@ class BlaChatSdk {
     return true;
   }
 
-  static Future<bool> markSeenMessage(String messageId, String channelId, String receiveId) async {
+  Future<bool> markSeenMessage(String messageId, String channelId, String receiveId) async {
     dynamic data = await _channel.invokeMethod(BlaConstants.MARK_SEEN_MESSAGE, <String, dynamic>{
       'messageId': messageId,
       'channelId': channelId,
@@ -245,7 +255,7 @@ class BlaChatSdk {
     return true;
   }
 
-  static Future<bool> markReceiveMessage(String messageId, String channelId, String receiveId) async {
+  Future<bool> markReceiveMessage(String messageId, String channelId, String receiveId) async {
     dynamic data = await _channel.invokeMethod(BlaConstants.MARK_RECEIVE_MESSAGE, <String, dynamic>{
       'messageId': messageId,
       'channelId': channelId,
@@ -258,7 +268,7 @@ class BlaChatSdk {
     return true;
   }
 
-  static Future<bool> createMessage(String content, String channelId, BlaMessageType type, Map<String, dynamic> customData) async {
+  Future<bool> createMessage(String content, String channelId, BlaMessageType type, Map<String, dynamic> customData) async {
     dynamic data = await _channel.invokeMethod(BlaConstants.CREATE_MESSAGE, <String, dynamic>{
       'content': content,
       'channelId': channelId,
@@ -272,7 +282,7 @@ class BlaChatSdk {
   }
 
   //PENDING
-  static Future<bool> updateMessage(String content, String channelId, BlaMessageType type, Map<String, dynamic> customData) async {
+  Future<bool> updateMessage(String content, String channelId, BlaMessageType type, Map<String, dynamic> customData) async {
     dynamic data = await _channel.invokeMethod(BlaConstants.UPDATE_MESSAGE, <String, dynamic>{
       'content': content,
       'channelId': channelId,
@@ -286,7 +296,7 @@ class BlaChatSdk {
   }
 
   //PENDING
-  static Future<bool> deleteMessage(String content, String channelId, BlaMessageType type, Map<String, dynamic> customData) async {
+   Future<bool> deleteMessage(String content, String channelId, BlaMessageType type, Map<String, dynamic> customData) async {
     dynamic data = await _channel.invokeMethod(BlaConstants.DELETE_MESSAGE, <String, dynamic>{
       'content': content,
       'channelId': channelId,
@@ -299,7 +309,7 @@ class BlaChatSdk {
     return true;
   }
 
-  static Future<bool> inviteUserToChannel(List<String> userIds, String channelId) async {
+  Future<bool> inviteUserToChannel(List<String> userIds, String channelId) async {
     dynamic data = await _channel.invokeMethod(BlaConstants.INVITE_USER_TO_CHANNEL, <String, dynamic>{
       'userIds': userIds,
       'channelId': channelId
@@ -311,7 +321,7 @@ class BlaChatSdk {
     return true;
   }
 
-  static Future<bool> removeUserFromChannel(String userId, String channelId) async {
+  Future<bool> removeUserFromChannel(String userId, String channelId) async {
     dynamic data = await _channel.invokeMethod(BlaConstants.REMOVE_USER_FROM_CHANNEL, <String, dynamic>{
       'userId': userId,
       'channelId': channelId
@@ -323,7 +333,7 @@ class BlaChatSdk {
     return true;
   }
 
-  static Future<List<BlaUserPresence>> getUserPresence() async {
+  Future<List<BlaUserPresence>> getUserPresence() async {
     dynamic data = await _channel.invokeMethod(BlaConstants.GET_USER_PRESENCE, <String, dynamic>{
     });
     Map valueMap = json.decode(data);

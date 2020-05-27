@@ -1,4 +1,6 @@
 import 'dart:core';
+import 'BlaMessage.dart';
+import 'dart:convert';
 
 class BlaChannel {
   String id;
@@ -9,15 +11,19 @@ class BlaChannel {
   int type;
   String customData;
   String lastMessageId;
+  BlaMessage lastMessage;
 
-  BlaChannel.fromJson(Map<String, dynamic> json) {
-    id = json["id"];
-    name = json["name"];
-    avatar = json["avatar"];
-    createdAt = DateTime.fromMicrosecondsSinceEpoch(json["createdAt"]);
-    updatedAt = DateTime.fromMicrosecondsSinceEpoch(json["updatedAt"]);
-    type = json["type"];
-    customData = json["customData"];
-    lastMessageId = json["lastMessageId"];
+  BlaChannel.fromJson(Map<String, dynamic> data) {
+    id = data["id"];
+    name = data["name"];
+    avatar = data["avatar"];
+    createdAt = DateTime.fromMicrosecondsSinceEpoch(data["createdAt"]);
+    updatedAt = DateTime.fromMicrosecondsSinceEpoch(data["updatedAt"]);
+    type = data["type"];
+    customData = data["customData"];
+    lastMessageId = data["lastMessageId"];
+    if (data["lastMessage"] != null) {
+      lastMessage = BlaMessage.fromJson(data["lastMessage"]);
+    }
   }
 }

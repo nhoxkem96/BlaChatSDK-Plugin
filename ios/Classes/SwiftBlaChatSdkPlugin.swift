@@ -45,6 +45,21 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
         
         switch call.method {
         case INIT_BLACHATSDK:
+            if let userId = arguments["userId"] as? String,
+                let token = arguments["token"] as? Int
+            {
+                UserDefaults.standard.setValue(userId, forKey: "userId")
+                UserDefaults.standard.setValue(token, forKey: "token")
+                let dict: [String: Any] = ["isSuccess": false, "result": true];
+                let json = try! JSONSerialization.data(withJSONObject: dict)
+                let jsonString = String(data: json, encoding: .utf8)!
+                result(jsonString)
+            } else {
+                let dict: [String: Any] = ["isSuccess": false, "message": "Error arguments"];
+                let json = try! JSONSerialization.data(withJSONObject: dict)
+                let jsonString = String(data: json, encoding: .utf8)!
+                result(jsonString)
+            }
             break
         case ADD_MESSSAGE_LISTENER:
             ChatSDK.shareInstance.addMessageListener(delegate: self as BlaMessageDelegate)
@@ -228,14 +243,14 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
         case SEND_START_TYPING:
             if let channelId = arguments["channelId"] as? String
             {
-                ChatSDK.shareInstance.sendStartTyping(channelId: channelId) { (result, error) in
+                ChatSDK.shareInstance.sendStartTyping(channelId: channelId) { (data, error) in
                     if let err = error {
                         let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
                         let json = try! JSONSerialization.data(withJSONObject: dict)
                         let jsonString = String(data: json, encoding: .utf8)!
                         result(jsonString)
                     } else {
-                        let dict: [String: Any] = ["isSuccess": true, "result": true];
+                        let dict: [String: Any] = ["isSuccess": true, "result": data!];
                         let json = try! JSONSerialization.data(withJSONObject: dict)
                         let jsonString = String(data: json, encoding: .utf8)!
                         result(jsonString)
@@ -251,14 +266,14 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
         case SEND_STOP_TYPING:
             if let channelId = arguments["channelId"] as? String
             {
-                ChatSDK.shareInstance.sendStopTyping(channelId: channelId) { (result, error) in
+                ChatSDK.shareInstance.sendStopTyping(channelId: channelId) { (data, error) in
                     if let err = error {
                         let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
                         let json = try! JSONSerialization.data(withJSONObject: dict)
                         let jsonString = String(data: json, encoding: .utf8)!
                         result(jsonString)
                     } else {
-                        let dict: [String: Any] = ["isSuccess": true, "result": true];
+                        let dict: [String: Any] = ["isSuccess": true, "result": data!];
                         let json = try! JSONSerialization.data(withJSONObject: dict)
                         let jsonString = String(data: json, encoding: .utf8)!
                         result(jsonString)
@@ -276,14 +291,14 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
                 let channelId = arguments["channelId"] as? String,
                 let receiveId = arguments["receiveId"] as? String
             {
-                ChatSDK.shareInstance.markSeenMessage(messageId: messageId, channelId: channelId, receiveId: receiveId) { (result, error) in
+                ChatSDK.shareInstance.markSeenMessage(messageId: messageId, channelId: channelId, receiveId: receiveId) { (data, error) in
                     if let err = error {
                         let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
                         let json = try! JSONSerialization.data(withJSONObject: dict)
                         let jsonString = String(data: json, encoding: .utf8)!
                         result(jsonString)
                     } else {
-                        let dict: [String: Any] = ["isSuccess": true, "result": true];
+                        let dict: [String: Any] = ["isSuccess": true, "result": data!];
                         let json = try! JSONSerialization.data(withJSONObject: dict)
                         let jsonString = String(data: json, encoding: .utf8)!
                         result(jsonString)
@@ -301,14 +316,14 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
             let channelId = arguments["channelId"] as? String,
             let receiveId = arguments["receiveId"] as? String
             {
-                ChatSDK.shareInstance.markReceiveMessage(messageId: messageId, channelId: channelId, receiveId: receiveId) { (result, error) in
+                ChatSDK.shareInstance.markReceiveMessage(messageId: messageId, channelId: channelId, receiveId: receiveId) { (data, error) in
                     if let err = error {
                         let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
                         let json = try! JSONSerialization.data(withJSONObject: dict)
                         let jsonString = String(data: json, encoding: .utf8)!
                         result(jsonString)
                     } else {
-                        let dict: [String: Any] = ["isSuccess": true, "result": true];
+                        let dict: [String: Any] = ["isSuccess": true, "result": data!];
                         let json = try! JSONSerialization.data(withJSONObject: dict)
                         let jsonString = String(data: json, encoding: .utf8)!
                         result(jsonString)
@@ -327,7 +342,7 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
                 let type = arguments["type"] as? Int,
                 let customData = arguments["customData"] as? String
             {
-                ChatSDK.shareInstance.createMessage(content: content, channelId: channelId, type: 1, customData: customData) { (result, error) in
+                ChatSDK.shareInstance.createMessage(content: content, channelId: channelId, type: BlaMessageType.TEXT, customData: nil) { (data, error) in
                     if let err = error {
                         let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
                         let json = try! JSONSerialization.data(withJSONObject: dict)
@@ -335,7 +350,7 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
                         result(jsonString)
                     } else {
                         let jsonEncoder = JSONEncoder()
-                        let jsonData = try! jsonEncoder.encode(result)
+                        let jsonData = try! jsonEncoder.encode(data!)
                         let jsonResult = String(data: jsonData, encoding: String.Encoding.utf8)
                         let dict: [String: Any] = ["isSuccess": true, "result": jsonResult!];
                         let json = try! JSONSerialization.data(withJSONObject: dict)
