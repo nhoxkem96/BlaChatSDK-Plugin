@@ -8,7 +8,7 @@ class BlaUser {
   bool online;
 //  DateTime lastActiveAt;
 
-  BlaUser.fromJSON(Map<String, dynamic> json) {
+  BlaUser.fromJson(Map<String, dynamic> json) {
     id = json["id"];
     name = json["name"];
     avatar = json["avatar"];

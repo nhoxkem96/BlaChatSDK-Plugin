@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:bla_chat_sdk/BlaChannel.dart';
 import 'package:bla_chat_sdk/bla_chat_sdk.dart';
+import 'chatcontainer.dart';
 
 class ChannelScreen extends StatefulWidget {
 
@@ -47,6 +48,10 @@ class ChannelScreenState extends State<ChannelScreen> {
             itemBuilder: (BuildContext context, int index) {
               return InkWell (
                   onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ChatContainer(_channels[index].id, userId)),
+                    );
                   },
                   child: Container(
                       margin: EdgeInsets.all(8),
@@ -55,7 +60,7 @@ class ChannelScreenState extends State<ChannelScreen> {
                         children: <Widget>[
                           CircleAvatar(
                             radius: 28,
-                            backgroundImage: NetworkImage( _channels[index].avatar.isEmpty ? "http://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png" : _channels[index].avatar)
+                            backgroundImage: NetworkImage(_channels[index].avatar.isEmpty ? "http://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png" : _channels[index].avatar)
                           ),
                           new Container(
                             margin: EdgeInsets.only(left: 8, top: 8, bottom: 8),
@@ -68,7 +73,12 @@ class ChannelScreenState extends State<ChannelScreen> {
                                 ),
                                 new Container(
                                   margin: const EdgeInsets.only(top: 5.0),
-                                  child: Text(_channels[index].lastMessage != null ? _channels[index].lastMessage.content : ""),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(_channels[index].lastMessage != null ? _channels[index].lastMessage.content : ""),
+                                    ],
+                                  )
                                 )
                               ],
                             ),

@@ -5,7 +5,8 @@ import 'BlaUtils.dart';
 
 class BlaMessage {
   String id;
-  String channelID;
+  String authorId;
+  String channelId;
   String content;
   BlaMessageType type;
   String customData;
@@ -18,17 +19,18 @@ class BlaMessage {
 
   BlaMessage.fromJson(Map<String, dynamic> json) {
     id = json["id"];
-    channelID = json["channelID"];
+    authorId = json["authorId"];
+    channelId = json["channelId"];
     content = json["content"];
     type = BlaUtils.initBlaMessageType(json["type"]);
     customData = json["customData"];
     createdAt = DateTime.fromMicrosecondsSinceEpoch(json["createdAt"]);
     updatedAt = json["updatedAt"] != null ? DateTime.fromMicrosecondsSinceEpoch(json["updatedAt"]) : DateTime.fromMicrosecondsSinceEpoch(json["createdAt"]);
     sentAt = DateTime.fromMicrosecondsSinceEpoch(json["sentAt"]);
-    author = BlaUser.fromJSON(json["author"]);
+    author = BlaUser.fromJson(json["author"]);
     List<dynamic> listReceivedBy = json["receivedBy"];
-    receivedBy = listReceivedBy.map((item) => BlaUser.fromJSON(item)).toList();
+    receivedBy = listReceivedBy.map((item) => BlaUser.fromJson(item)).toList();
     List<dynamic> listSeenBy = json["seenBy"];
-    seenBy = listSeenBy.map((item) => BlaUser.fromJSON(item)).toList();
+    seenBy = listSeenBy.map((item) => BlaUser.fromJson(item)).toList();
   }
 }
