@@ -26,4 +26,21 @@ class BlaConstants {
   static String INVITE_USER_TO_CHANNEL = "inviteUserToChannel";
   static String REMOVE_USER_FROM_CHANNEL = "removeUserFromChannel";
   static String GET_USER_PRESENCE = "getUserPresence";
+
+  //Listener
+
+  static final String ON_NEW_MESSAGE = "getUserPresence";
+  static final String ON_UPDATE_MESSAGE = "getUserPresence";
+  static final String ON_DELETE_MESSAGE = "getUserPresence";
+  static final String ON_USER_SEEN = "getUserPresence";
+  static final String ON_USER_RECEIVE = "getUserPresence";
+  static final String ON_UPDATE = "getUserPresence";
+  static final String ON_NEW_CHANNEL = "getUserPresence";
+  static final String ON_UPDATE_CHANNEL = "getUserPresence";
+  static final String ON_DELETE_CHANNEL = "getUserPresence";
+  static final String ON_USER_SEEN_MESSAGE = "getUserPresence";
+  static final String ON_USER_RECEIVE_MESSAGE = "getUserPresence";
+  static final String ON_TYPING = "getUserPresence";
+  static final String ON_MEMBER_JOIN = "getUserPresence";
+  static final String ON_MEMBER_LEAVE = "getUserPresence";
 }

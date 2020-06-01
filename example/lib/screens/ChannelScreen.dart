@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:bla_chat_sdk/BlaChannel.dart';
 import 'package:bla_chat_sdk/bla_chat_sdk.dart';
 import 'chatcontainer.dart';
+import 'package:bla_chat_sdk/BlaUser.dart';
+import 'package:bla_chat_sdk/EventType.dart';
+
 
 class ChannelScreen extends StatefulWidget {
 
@@ -20,11 +23,22 @@ class ChannelScreenState extends State<ChannelScreen> {
 
   ChannelScreenState(this.userId);
 
+
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getChannels();
+    this.addListener();
+  }
+
+  void addListener() async {
+    await BlaChatSdk.instance.addChannelListener(new ChannelListener(
+      onTyping: (BlaChannel channel, BlaUser user, EventType type) {
+        print("run here haha " + channel.toString());
+      }
+    ));
   }
 
   void getChannels() async {
@@ -40,7 +54,7 @@ class ChannelScreenState extends State<ChannelScreen> {
     // TODO: implement build
     return new Scaffold(
       appBar: new AppBar(
-        title: Text("Channels"),
+        title: Text("Channels")
       ),
       body: Container(
         child: ListView.builder(
@@ -91,5 +105,11 @@ class ChannelScreenState extends State<ChannelScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void onTyping(String test) {
+    // TODO: implement onTyping
+    print("ghahahaha " + test);
   }
 }

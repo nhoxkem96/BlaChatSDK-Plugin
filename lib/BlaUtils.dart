@@ -6,7 +6,18 @@ import 'EventType.dart';
 
 class BlaUtils {
 
-  static BlaChannelType initBlaChannelTyp(int value) {
+  static EventType initEventType(int value) {
+    switch (value) {
+      case 0:
+        return EventType.STOP;
+      case 1:
+        return EventType.START;
+      default:
+        return EventType.STOP;
+    }
+  }
+
+  static BlaChannelType initBlaChannelType(int value) {
     switch (value) {
       default:
         return BlaChannelType.GROUP;

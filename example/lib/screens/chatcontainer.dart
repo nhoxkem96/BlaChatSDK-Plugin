@@ -84,7 +84,12 @@ class _ChatContainerState extends State<ChatContainer> {
             ],
           ),
         ),
-        body: new ChatContent(conversationID, myID)
+        body: new GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(new FocusNode());
+          },
+          child: new ChatContent(conversationID, myID),
+        )
     );
   }
 }

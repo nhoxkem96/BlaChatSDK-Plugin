@@ -91,6 +91,103 @@ class OutComingMessage extends StatelessWidget {
   }
 }
 
+class SystemMessageView extends StatelessWidget {
+
+  final BlaMessage message;
+
+  SystemMessageView(this.message);
+
+  @override
+  Widget build(BuildContext context) {
+    return new Container(
+      margin: EdgeInsets.fromLTRB(0, 0, 0, 8),
+      child: new Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Expanded(
+            child: new Container(
+              padding: EdgeInsets.all(8),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  new Text(
+                    message.content,
+                    style: TextStyle(
+                        color: Colors.grey, fontWeight: FontWeight.bold),
+                    maxLines: 2,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 15),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+//class ImageMessageContent extends StatelessWidget {
+//  final BlaMessage message;
+//  final Color timeColor;
+//
+//  ImageMessageContent(this.message, this.timeColor);
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    return new ConstrainedBox(
+//        constraints: new BoxConstraints(
+//          minHeight: 50.0,
+//          minWidth: 50.0,
+//          maxHeight: message.height.toDouble() * 250 / message.width.toDouble(),
+//          maxWidth: 250,
+//        ),
+//        child: Stack(
+//          children: <Widget>[
+//            Center(
+//                child: CircularProgressIndicator(
+//                  valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
+//                )),
+//            Center(
+//                child: Container(
+//                  margin: marginItem,
+//                  decoration:
+//                  new BoxDecoration(borderRadius: BorderRadius.circular(5)),
+//                  child: Column(
+//                    crossAxisAlignment: CrossAxisAlignment.start,
+//                    mainAxisAlignment: MainAxisAlignment.center,
+//                    children: <Widget>[
+//                      ImageViewer(message.content, message.height, message.width,
+//                          BoxFit.contain),
+//                    ],
+//                  ),
+//                )),
+//            Align(
+//                alignment: Alignment.bottomRight,
+//                child: Padding(
+//                  padding: EdgeInsets.only(right: 10, bottom: 12),
+//                  child: Container(
+//                    padding: EdgeInsets.all(3),
+//                    child: Text(
+//                      message.getTime(),
+//                      style: TextStyle(color: Colors.white, fontSize: 10),
+//                    ),
+//                    decoration: new BoxDecoration(
+//                        color: Colors.black87,
+//                        borderRadius: BorderRadius.circular(6)),
+//                    constraints: new BoxConstraints(
+//                        maxWidth: MediaQuery.of(context).size.width - 60),
+//                  ),
+//                ))
+//          ],
+//        ));
+//  }
+//}
+
 class StringMessageContent extends StatelessWidget {
   final BlaMessage message;
 

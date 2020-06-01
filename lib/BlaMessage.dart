@@ -9,6 +9,7 @@ class BlaMessage {
   String channelId;
   String content;
   BlaMessageType type;
+  bool isSystemMessage;
   String customData;
   DateTime createdAt;
   DateTime updatedAt;
@@ -23,6 +24,7 @@ class BlaMessage {
     channelId = json["channelId"];
     content = json["content"];
     type = BlaUtils.initBlaMessageType(json["type"]);
+    isSystemMessage = json["isSystemMessage"];
     customData = json["customData"];
     createdAt = DateTime.fromMicrosecondsSinceEpoch(json["createdAt"]);
     updatedAt = json["updatedAt"] != null ? DateTime.fromMicrosecondsSinceEpoch(json["updatedAt"]) : DateTime.fromMicrosecondsSinceEpoch(json["createdAt"]);

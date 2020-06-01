@@ -136,6 +136,26 @@ class ChatContentState extends State<ChatContent> {
     }
   }
 
+  void sendStartTyping() async {
+    try {
+      print("send start");
+      var result = await BlaChatSdk.instance.sendStartTyping(this.channelID);
+      print("send start typing " + result.toString());
+    } catch (e) {
+      print("send start typing error " + e);
+    }
+  }
+
+  void sendStopTyping() async {
+    try {
+      print("send stop");
+      var result = await BlaChatSdk.instance.sendStopTyping(this.channelID);
+      print("send stop typing " + result.toString());
+    } catch (e) {
+      print("send stop typing error " + e);
+    }
+  }
+
   void getMessage() async {
     var messages = await BlaChatSdk.instance.getMessages(channelID, "", 20);
     if (mounted) {
@@ -146,12 +166,17 @@ class ChatContentState extends State<ChatContent> {
   }
 
   void _handleSubmit(String text) async {
-    _chatController.clear();
-    var message = await BlaChatSdk.instance.createMessage(text, this.channelID, BlaMessageType.TEXT, null);
-    if (mounted) {
-      setState(() {
-        listMessage.insert(0, message);
-      });
+    try {
+      _chatController.clear();
+      var message = await BlaChatSdk.instance.createMessage(text, this.channelID, BlaMessageType.TEXT, null);
+      print("send message success " + message.toString());
+      if (mounted) {
+        setState(() {
+          listMessage.insert(0, message);
+        });
+      }
+    } catch (e) {
+      print("Send message error " + e);
     }
   }
 
@@ -166,7 +191,15 @@ class ChatContentState extends State<ChatContent> {
               child: new TextField(
                 decoration: new InputDecoration.collapsed(hintText: "Start typing ..."),
                 controller: _chatController,
-                onSubmitted: _handleSubmit,
+                onSubmitted: (text) {
+                  _chatController.dispose();
+                },
+                onTap: () {
+                  sendStartTyping();
+                },
+                onEditingComplete: () {
+                  sendStopTyping();
+                },
               ),
             ),
             new Container(
@@ -192,6 +225,7 @@ class ChatContentState extends State<ChatContent> {
             reverse: true,
             semanticChildCount: 1,
             itemBuilder: (_, int index) {
+
               if (listMessage[index].authorId == myID){
                 return OutComingMessage(
                     message: listMessage[index],

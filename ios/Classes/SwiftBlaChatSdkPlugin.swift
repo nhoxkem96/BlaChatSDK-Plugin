@@ -4,6 +4,8 @@ import BlaChatSDK
 
 public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener, BlaChannelDelegate, BlaMessageDelegate {
     
+    var _channel: FlutterMethodChannel;
+    
     final let INIT_BLACHATSDK = "initBlaChatSDK";
     final let ADD_MESSSAGE_LISTENER = "addMessageListener";
     final let REMOVE_MESSSAGE_LISTENER = "removeMessageListener";
@@ -31,8 +33,12 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "bla_chat_sdk", binaryMessenger: registrar.messenger())
-        let instance = SwiftBlaChatSdkPlugin()
+        let instance = SwiftBlaChatSdkPlugin(channel)
         registrar.addMethodCallDelegate(instance, channel: channel)
+    }
+    
+    public init(_ channel: FlutterMethodChannel) {
+        self._channel = channel
     }
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -46,10 +52,13 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
         switch call.method {
         case INIT_BLACHATSDK:
             if let userId = arguments["userId"] as? String,
-                let token = arguments["token"] as? Int
+                let token = arguments["token"] as? String
             {
                 UserDefaults.standard.setValue(userId, forKey: "userId")
                 UserDefaults.standard.setValue(token, forKey: "token")
+                ChatSDK.shareInstance.addMessageListener(delegate: self as BlaMessageDelegate)
+                ChatSDK.shareInstance.addChannelListener(delegate: self as BlaChannelDelegate)
+                ChatSDK.shareInstance.addPresenceListener(delegate: self as BlaPresenceListener)
                 let dict: [String: Any] = ["isSuccess": false, "result": true];
                 let json = try! JSONSerialization.data(withJSONObject: dict)
                 let jsonString = String(data: json, encoding: .utf8)!
@@ -63,21 +72,27 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
             break
         case ADD_MESSSAGE_LISTENER:
             ChatSDK.shareInstance.addMessageListener(delegate: self as BlaMessageDelegate)
+            result(true)
             break
         case REMOVE_MESSSAGE_LISTENER:
             ChatSDK.shareInstance.removeMessageListener(delegate: self as BlaMessageDelegate)
+            result(true)
             break
         case ADD_CHANNEL_LISTENER:
             ChatSDK.shareInstance.addChannelListener(delegate: self as BlaChannelDelegate)
+            result(true)
             break
         case REMOVE_CHANNEL_LISTENER:
             ChatSDK.shareInstance.removeChannelListener(delegate: self as BlaChannelDelegate)
+            result(true)
             break
         case ADD_PRESENCE_LISTENER:
             ChatSDK.shareInstance.addPresenceListener(delegate: self as BlaPresenceListener)
+            result(true)
             break
         case REMOVE_PRESENCE_LISTENER:
             ChatSDK.shareInstance.removePresenceListener(delegate: self as BlaPresenceListener)
+            result(true)
             break
         case GET_CHANNELS:
             if let lastId = arguments["lastId"] as? String,
@@ -160,7 +175,7 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
             break
         case GET_MESSAGES:
             if let channelId = arguments["channelId"] as? String,
-               let lastId = arguments["lastId"] as? String,
+                let lastId = arguments["lastId"] as? String,
                 let limit = arguments["limit"] as? Int
             {
                 ChatSDK.shareInstance.getMessages(channelId: channelId, lastId: lastId, limit: limit) { (messages, error) in
@@ -313,8 +328,8 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
             break
         case MARK_RECEIVE_MESSAGE:
             if let messageId = arguments["messageId"] as? String,
-            let channelId = arguments["channelId"] as? String,
-            let receiveId = arguments["receiveId"] as? String
+                let channelId = arguments["channelId"] as? String,
+                let receiveId = arguments["receiveId"] as? String
             {
                 ChatSDK.shareInstance.markReceiveMessage(messageId: messageId, channelId: channelId, receiveId: receiveId) { (data, error) in
                     if let err = error {
@@ -338,9 +353,8 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
             break
         case CREATE_MESSAGE:
             if let content = arguments["content"] as? String,
-               let channelId = arguments["channelId"] as? String,
-                let type = arguments["type"] as? Int,
-                let customData = arguments["customData"] as? String
+                let channelId = arguments["channelId"] as? String,
+                let type = arguments["type"] as? Int
             {
                 ChatSDK.shareInstance.createMessage(content: content, channelId: channelId, type: BlaMessageType.TEXT, customData: nil) { (data, error) in
                     if let err = error {
@@ -426,44 +440,146 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
     }
     
     public func onNewChannel(channel: BlaChannel) {
+        let jsonEncoder = JSONEncoder()
         
+        let jsonData1 = try! jsonEncoder.encode(channel)
+        let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
+        
+        self._channel.invokeMethod("onNewChannel", arguments: [
+            "channel": jsonResult1!,
+        ]);
     }
     
     public func onUpdateChannel(channel: BlaChannel) {
+        let jsonEncoder = JSONEncoder()
         
+        let jsonData1 = try! jsonEncoder.encode(channel)
+        let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
+        
+        self._channel.invokeMethod("onUpdateChannel", arguments: [
+            "channel": jsonResult1!,
+        ]);
     }
     
     public func onDeleteChannel(channel: BlaChannel) {
+        let jsonEncoder = JSONEncoder()
         
+        let jsonData1 = try! jsonEncoder.encode(channel)
+        let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
+        
+        self._channel.invokeMethod("onDeleteChannel", arguments: [
+            "channel": jsonResult1!,
+        ]);
     }
     
     public func onTyping(channel: BlaChannel, user: BlaUser, type: BlaEventType) {
+        let jsonEncoder = JSONEncoder()
         
+        let jsonData1 = try! jsonEncoder.encode(channel)
+        let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
+
+        let jsonData2 = try! jsonEncoder.encode(user)
+        let jsonResult2 = String(data: jsonData2, encoding: String.Encoding.utf8)
+        
+        self._channel.invokeMethod("onTyping", arguments: [
+            "channel": jsonResult1!,
+            "user": jsonResult2!,
+            "type": type == BlaEventType.START ? 1 : 0
+        ]);
     }
     
     public func onMemberJoin(channel: BlaChannel, user: BlaUser) {
+        let jsonEncoder = JSONEncoder()
         
+        let jsonData1 = try! jsonEncoder.encode(channel)
+        let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
+
+        let jsonData2 = try! jsonEncoder.encode(user)
+        let jsonResult2 = String(data: jsonData2, encoding: String.Encoding.utf8)
+        
+        self._channel.invokeMethod("onMemberJoin", arguments: [
+            "channel": jsonResult1!,
+            "user": jsonResult2!,
+        ]);
     }
     
     public func onMemberLeave(channel: BlaChannel, user: BlaUser) {
+        let jsonEncoder = JSONEncoder()
         
+        let jsonData1 = try! jsonEncoder.encode(channel)
+        let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
+
+        let jsonData2 = try! jsonEncoder.encode(user)
+        let jsonResult2 = String(data: jsonData2, encoding: String.Encoding.utf8)
+        
+        self._channel.invokeMethod("onMemberLeave", arguments: [
+            "channel": jsonResult1!,
+            "user": jsonResult2!,
+        ]);
     }
     
     public func onNewMessage(message: BlaMessage) {
+        let jsonEncoder = JSONEncoder()
         
+        let jsonData1 = try! jsonEncoder.encode(message)
+        let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
+        
+        self._channel.invokeMethod("onNewMessage", arguments: [
+            "message": jsonResult1!,
+        ]);
     }
     
     public func onUpdateMessage(message: BlaMessage) {
+        let jsonEncoder = JSONEncoder()
         
+        let jsonData1 = try! jsonEncoder.encode(message)
+        let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
+        
+        self._channel.invokeMethod("onUpdateMessage", arguments: [
+            "message": jsonResult1!,
+        ]);
     }
     
     public func onDeleteMessage(message: BlaMessage) {
+        let jsonEncoder = JSONEncoder()
+        
+        let jsonData1 = try! jsonEncoder.encode(message)
+        let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
+        
+        self._channel.invokeMethod("onDeleteMessage", arguments: [
+            "message": jsonResult1!,
+        ]);
     }
     
     public func onUserSeen(message: BlaMessage, user: BlaUser, seenAt: Date) {
+        let jsonEncoder = JSONEncoder()
         
+        let jsonData1 = try! jsonEncoder.encode(message)
+        let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
+
+        let jsonData2 = try! jsonEncoder.encode(user)
+        let jsonResult2 = String(data: jsonData2, encoding: String.Encoding.utf8)
+        
+        self._channel.invokeMethod("onUserSeen", arguments: [
+            "message": jsonResult1!,
+            "user": jsonResult2!,
+            "seenAt": seenAt.timeIntervalSince1970
+        ]);
     }
     
     public func onUserReceive(message: BlaMessage, user: BlaUser, sentAt seentAt: Date) {
+        let jsonEncoder = JSONEncoder()
+        
+        let jsonData1 = try! jsonEncoder.encode(message)
+        let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
+
+        let jsonData2 = try! jsonEncoder.encode(user)
+        let jsonResult2 = String(data: jsonData2, encoding: String.Encoding.utf8)
+        
+        self._channel.invokeMethod("onUserReceive", arguments: [
+            "message": jsonResult1!,
+            "user": jsonResult2!,
+            "seenAt": seenAt.timeIntervalSince1970
+        ]);
     }
 }
