@@ -32,29 +32,47 @@ class CreateChannelScreenState extends State<CreateChannelScreen> {
     }
   }
 
+  void testFunction() async {
+    try {
+//      var result = await BlaChatSdk.instance.updateChannel(channel);
+    } catch (e) {
+      print("error test " + e.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: <Widget>[
-          TextField(
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: "name"
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Create channel"),
+      ),
+      body: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+              child: TextField(
+                decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "name"
+                ),
+                controller: channelName,
+              ),
             ),
-            controller: channelName,
-          ),
-          Container(
-            height: 20,
-          ),
-          RaisedButton(
-            onPressed: () {
+            Container(
+              height: 20,
+            ),
+            RaisedButton(
+              onPressed: () {
 
-            },
-            color: Colors.blue,
-            child: Text("Create channel"),
-          )
-        ],
+              },
+              color: Colors.blue,
+              child: Text("Create channel"),
+            )
+          ],
+        ),
       ),
     );
   }

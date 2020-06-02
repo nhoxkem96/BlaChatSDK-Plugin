@@ -1,6 +1,7 @@
 import Flutter
 import UIKit
 import BlaChatSDK
+import SwiftyJSON
 
 public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener, BlaChannelDelegate, BlaMessageDelegate {
     
@@ -105,7 +106,10 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
                         let jsonString = String(data: json, encoding: .utf8)!
                         result(jsonString)
                     } else {
+                        let formatter = DateFormatter()
+                        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
                         let jsonEncoder = JSONEncoder()
+                        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
                         let jsonData = try! jsonEncoder.encode(channels)
                         let jsonResult = String(data: jsonData, encoding: String.Encoding.utf8)
                         let dict: [String: Any] = ["isSuccess": true, "result": jsonResult!];
@@ -131,7 +135,10 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
                         let jsonString = String(data: json, encoding: .utf8)!
                         result(jsonString)
                     } else {
+                        let formatter = DateFormatter()
+                        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
                         let jsonEncoder = JSONEncoder()
+                        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
                         let jsonData = try! jsonEncoder.encode(users)
                         let jsonResult = String(data: jsonData, encoding: String.Encoding.utf8)
                         let dict: [String: Any] = ["isSuccess": true, "result": jsonResult!];
@@ -157,7 +164,10 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
                         let jsonString = String(data: json, encoding: .utf8)!
                         result(jsonString)
                     } else {
+                        let formatter = DateFormatter()
+                        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
                         let jsonEncoder = JSONEncoder()
+                        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
                         let jsonData = try! jsonEncoder.encode(users)
                         let jsonResult = String(data: jsonData, encoding: String.Encoding.utf8)
                         let dict: [String: Any] = ["isSuccess": true, "result": jsonResult!];
@@ -185,7 +195,10 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
                         let jsonString = String(data: json, encoding: .utf8)!
                         result(jsonString)
                     } else {
+                        let formatter = DateFormatter()
+                        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
                         let jsonEncoder = JSONEncoder()
+                        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
                         let jsonData = try! jsonEncoder.encode(messages)
                         let jsonResult = String(data: jsonData, encoding: String.Encoding.utf8)
                         let dict: [String: Any] = ["isSuccess": true, "result": jsonResult!];
@@ -217,7 +230,10 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
                         let jsonString = String(data: json, encoding: .utf8)!
                         result(jsonString)
                     } else {
+                        let formatter = DateFormatter()
+                        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
                         let jsonEncoder = JSONEncoder()
+                        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
                         let jsonData = try! jsonEncoder.encode(channel)
                         let jsonResult = String(data: jsonData, encoding: String.Encoding.utf8)
                         let dict: [String: Any] = ["isSuccess": true, "result": jsonResult!];
@@ -234,9 +250,30 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
             }
             break
         case UPDATE_CHANNEL:
-            if let channelId = arguments["channelId"] as? String
+            if let jsonChannel = arguments["channel"] as? String
             {
-                
+                let json = JSON.init(parseJSON: jsonChannel)
+                let channel = BlaChannel(dao: BlaChannelDAO(json: json))
+                ChatSDK.shareInstance.updateChannel(channel: channel) { (channelResult, error) in
+                    if let err = error {
+                        let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
+                        let json = try! JSONSerialization.data(withJSONObject: dict)
+                        let jsonString = String(data: json, encoding: .utf8)!
+                        result(jsonString)
+                    } else {
+                        let formatter = DateFormatter()
+                        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+                        let jsonEncoder = JSONEncoder()
+                        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
+                        let data = jsonChannel.data(using: .utf8)!
+                        let jsonData = try! jsonEncoder.encode(channelResult)
+                        let jsonResult = String(data: jsonData, encoding: String.Encoding.utf8)
+                        let dict: [String: Any] = ["isSuccess": true, "result": jsonResult!];
+                        let json = try! JSONSerialization.data(withJSONObject: dict)
+                        let jsonString = String(data: json, encoding: .utf8)!
+                        result(jsonString)
+                    }
+                }
             } else {
                 let dict: [String: Any] = ["isSuccess": false, "message": "Error arguments"];
                 let json = try! JSONSerialization.data(withJSONObject: dict)
@@ -245,16 +282,36 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
             }
             break
         case DELETE_CHANNEL:
-            if let channelId = arguments["channelId"] as? String
+            if let jsonChannel = arguments["channel"] as? String
             {
-                
+                let json = JSON.init(parseJSON: jsonChannel)
+                let channel = BlaChannel(dao: BlaChannelDAO(json: json))
+                ChatSDK.shareInstance.deleteChannel(channel: channel) { (channelResult, error) in
+                    if let err = error {
+                        let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
+                        let json = try! JSONSerialization.data(withJSONObject: dict)
+                        let jsonString = String(data: json, encoding: .utf8)!
+                        result(jsonString)
+                    } else {
+                        let formatter = DateFormatter()
+                        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+                        let jsonEncoder = JSONEncoder()
+                        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
+                        let data = jsonChannel.data(using: .utf8)!
+                        let jsonData = try! jsonEncoder.encode(channelResult)
+                        let jsonResult = String(data: jsonData, encoding: String.Encoding.utf8)
+                        let dict: [String: Any] = ["isSuccess": true, "result": jsonResult!];
+                        let json = try! JSONSerialization.data(withJSONObject: dict)
+                        let jsonString = String(data: json, encoding: .utf8)!
+                        result(jsonString)
+                    }
+                }
             } else {
                 let dict: [String: Any] = ["isSuccess": false, "message": "Error arguments"];
                 let json = try! JSONSerialization.data(withJSONObject: dict)
                 let jsonString = String(data: json, encoding: .utf8)!
                 result(jsonString)
             }
-            break
         case SEND_START_TYPING:
             if let channelId = arguments["channelId"] as? String
             {
@@ -363,7 +420,10 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
                         let jsonString = String(data: json, encoding: .utf8)!
                         result(jsonString)
                     } else {
+                        let formatter = DateFormatter()
+                        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
                         let jsonEncoder = JSONEncoder()
+                        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
                         let jsonData = try! jsonEncoder.encode(data!)
                         let jsonResult = String(data: jsonData, encoding: String.Encoding.utf8)
                         let dict: [String: Any] = ["isSuccess": true, "result": jsonResult!];
@@ -440,7 +500,10 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
     }
     
     public func onNewChannel(channel: BlaChannel) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         let jsonEncoder = JSONEncoder()
+        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
         
         let jsonData1 = try! jsonEncoder.encode(channel)
         let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
@@ -451,7 +514,10 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
     }
     
     public func onUpdateChannel(channel: BlaChannel) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         let jsonEncoder = JSONEncoder()
+        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
         
         let jsonData1 = try! jsonEncoder.encode(channel)
         let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
@@ -462,7 +528,10 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
     }
     
     public func onDeleteChannel(channel: BlaChannel) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         let jsonEncoder = JSONEncoder()
+        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
         
         let jsonData1 = try! jsonEncoder.encode(channel)
         let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
@@ -473,7 +542,10 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
     }
     
     public func onTyping(channel: BlaChannel, user: BlaUser, type: BlaEventType) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         let jsonEncoder = JSONEncoder()
+        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
         
         let jsonData1 = try! jsonEncoder.encode(channel)
         let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
@@ -489,7 +561,10 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
     }
     
     public func onMemberJoin(channel: BlaChannel, user: BlaUser) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         let jsonEncoder = JSONEncoder()
+        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
         
         let jsonData1 = try! jsonEncoder.encode(channel)
         let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
@@ -504,7 +579,10 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
     }
     
     public func onMemberLeave(channel: BlaChannel, user: BlaUser) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         let jsonEncoder = JSONEncoder()
+        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
         
         let jsonData1 = try! jsonEncoder.encode(channel)
         let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
@@ -519,7 +597,10 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
     }
     
     public func onNewMessage(message: BlaMessage) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         let jsonEncoder = JSONEncoder()
+        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
         
         let jsonData1 = try! jsonEncoder.encode(message)
         let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
@@ -530,7 +611,10 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
     }
     
     public func onUpdateMessage(message: BlaMessage) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         let jsonEncoder = JSONEncoder()
+        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
         
         let jsonData1 = try! jsonEncoder.encode(message)
         let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
@@ -541,7 +625,10 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
     }
     
     public func onDeleteMessage(message: BlaMessage) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         let jsonEncoder = JSONEncoder()
+        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
         
         let jsonData1 = try! jsonEncoder.encode(message)
         let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
@@ -552,7 +639,10 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
     }
     
     public func onUserSeen(message: BlaMessage, user: BlaUser, seenAt: Date) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         let jsonEncoder = JSONEncoder()
+        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
         
         let jsonData1 = try! jsonEncoder.encode(message)
         let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
@@ -567,8 +657,11 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
         ]);
     }
     
-    public func onUserReceive(message: BlaMessage, user: BlaUser, sentAt seentAt: Date) {
+    public func onUserReceive(message: BlaMessage, user: BlaUser, receivedAt: Date) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         let jsonEncoder = JSONEncoder()
+        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
         
         let jsonData1 = try! jsonEncoder.encode(message)
         let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
@@ -579,7 +672,7 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
         self._channel.invokeMethod("onUserReceive", arguments: [
             "message": jsonResult1!,
             "user": jsonResult2!,
-            "seenAt": seenAt.timeIntervalSince1970
+            "receivedAt": receivedAt.timeIntervalSince1970
         ]);
     }
 }

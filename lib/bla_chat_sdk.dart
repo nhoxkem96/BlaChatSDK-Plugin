@@ -334,43 +334,44 @@ class BlaChatSdk {
         <String, dynamic>{'name': name, 'userIds': userIds, 'type': type});
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
-//    List<dynamic> result = json.decode(valueMap["result"]);
-//    if (isSuccess) {
-//      List<dynamic> result = json.decode(valueMap["result"]);
-//      List<BlaMessage> messages = result.map((item) => BlaMessage.fromJson(item)).toList();
-//      return messages;
-//    } else {
-//      throw valueMap["message"];
-//    }
+    if (isSuccess) {
+      var channel = BlaChannel.fromJson(json.decode(valueMap["result"]));
+      return channel;
+    } else {
+      throw valueMap["message"];
+    }
   }
 
-  // PENDING
   Future<BlaChannel> updateChannel(BlaChannel channel) async {
+    var jsonChannel = jsonEncode(channel.toJson());
     dynamic data = await _channel
-        .invokeMethod(BlaConstants.CREATE_CHANNEL, <String, dynamic>{
-//      'name': name,
-//      'userIds': userIds,
-//      'type': type
+        .invokeMethod(BlaConstants.UPDATE_CHANNEL, <String, dynamic>{
+      'channel': jsonChannel
     });
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
-    List<dynamic> result = json.decode(valueMap["result"]);
-    print("is success " + isSuccess.toString());
-    print("result " + valueMap["result"]);
-    return null;
+    if (isSuccess) {
+      var channel = BlaChannel.fromJson(valueMap["result"]);
+      return channel;
+    } else {
+      throw valueMap["message"];
+    }
   }
 
-  //PENDING
-  Future<BlaChannel> deleteChannel(
-      String name, List<String> userIds, BlaChannelType type) async {
-    dynamic data = await _channel.invokeMethod(BlaConstants.CREATE_CHANNEL,
-        <String, dynamic>{'name': name, 'userIds': userIds, 'type': type});
+  Future<BlaChannel> deleteChannel(BlaChannel channel) async {
+    var jsonChannel = jsonEncode(channel.toJson());
+    dynamic data = await _channel.invokeMethod(BlaConstants.DELETE_CHANNEL,
+        <String, dynamic>{
+          'channel': jsonChannel
+        });
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
-    List<dynamic> result = json.decode(valueMap["result"]);
-    print("is success " + isSuccess.toString());
-    print("result " + valueMap["result"]);
-    return null;
+    if (isSuccess) {
+      var channel = BlaChannel.fromJson(valueMap["result"]);
+      return channel;
+    } else {
+      throw valueMap["message"];
+    }
   }
 
   Future<bool> sendStartTyping(String channelId) async {
@@ -456,18 +457,20 @@ class BlaChatSdk {
   }
 
   //PENDING
-  Future<bool> updateMessage(String content, String channelId,
-      BlaMessageType type, Map<String, dynamic> customData) async {
+  Future<bool> updateMessage(BlaMessage message) async {
+    var jsonMessage = message.toJson();
     dynamic data = await _channel
         .invokeMethod(BlaConstants.UPDATE_MESSAGE, <String, dynamic>{
-      'content': content,
-      'channelId': channelId,
-      'type': BlaUtils.getBlaMessageTypeRawValue(type)
+      'message': jsonMessage
     });
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
-    List<dynamic> result = json.decode(valueMap["result"]);
-//      BlaChannel channel = BlaChannel.fromJson(result[0]);
+    if (isSuccess) {
+      List<dynamic> result = json.decode(valueMap["result"]);
+    } else {
+
+    }
+
     return true;
   }
 

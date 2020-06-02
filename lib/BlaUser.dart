@@ -6,7 +6,6 @@ class BlaUser {
   String avatar;
   String customData;
   bool online;
-//  DateTime lastActiveAt;
 
   BlaUser.fromJson(Map<String, dynamic> json) {
     id = json["id"];
@@ -14,6 +13,13 @@ class BlaUser {
     avatar = json["avatar"];
     customData = json["customData"];
     online = json["online"];
-//    lastActiveAt = DateTime.fromMicrosecondsSinceEpoch(json["lastActiveAt"]);
   }
+
+  Map toJson() => {
+    "id": id,
+    "name": name,
+    "avatar": avatar,
+    "customData": customData,
+    "online": online,
+  };
 }

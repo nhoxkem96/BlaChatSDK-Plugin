@@ -17,8 +17,8 @@ class BlaChannel {
     id = data["id"];
     name = data["name"];
     avatar = data["avatar"];
-    createdAt = DateTime.fromMicrosecondsSinceEpoch(data["createdAt"]);
-    updatedAt = DateTime.fromMicrosecondsSinceEpoch(data["updatedAt"]);
+    createdAt = DateTime.parse(data["createdAt"]);
+    updatedAt = DateTime.parse(data["updatedAt"]);
     type = data["type"];
     customData = data["customData"];
     lastMessageId = data["lastMessageId"];
@@ -26,4 +26,16 @@ class BlaChannel {
       lastMessage = BlaMessage.fromJson(data["lastMessage"]);
     }
   }
+
+  Map toJson() => {
+    "id": id,
+    "name": name,
+    "avatar": avatar,
+    "createdAt": createdAt.millisecondsSinceEpoch,
+    "updatedAt": updatedAt.millisecondsSinceEpoch,
+    "type": type,
+    "customData": customData,
+    "lastMessageId": lastMessageId,
+    "lastMessage": lastMessage.toJson(),
+  };
 }

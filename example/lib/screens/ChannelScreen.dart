@@ -4,7 +4,7 @@ import 'package:bla_chat_sdk/bla_chat_sdk.dart';
 import 'chatcontainer.dart';
 import 'package:bla_chat_sdk/BlaUser.dart';
 import 'package:bla_chat_sdk/EventType.dart';
-
+import 'CreateChannel.dart';
 
 class ChannelScreen extends StatefulWidget {
 
@@ -36,7 +36,6 @@ class ChannelScreenState extends State<ChannelScreen> {
   void addListener() async {
     await BlaChatSdk.instance.addChannelListener(new ChannelListener(
       onTyping: (BlaChannel channel, BlaUser user, EventType type) {
-        print("run here haha " + channel.toString());
       }
     ));
   }
@@ -49,12 +48,34 @@ class ChannelScreenState extends State<ChannelScreen> {
       });
   }
 
+  void testFunction(BlaChannel channel) async {
+    try {
+      var result = await BlaChatSdk.instance.updateChannel(channel);
+      print("test test result " + result.toString());
+    } catch (e) {
+      print("error test " + e.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return new Scaffold(
       appBar: new AppBar(
-        title: Text("Channels")
+        title: Text("Channels"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add),
+            iconSize: 30,
+            onPressed: () {
+              print("run here");
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CreateChannelScreen(this.userId)),
+              );
+            },
+          )
+        ],
       ),
       body: Container(
         child: ListView.builder(
@@ -62,10 +83,11 @@ class ChannelScreenState extends State<ChannelScreen> {
             itemBuilder: (BuildContext context, int index) {
               return InkWell (
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ChatContainer(_channels[index].id, userId)),
-                    );
+                    this.testFunction(_channels[index]);
+//                    Navigator.push(
+//                      context,
+//                      MaterialPageRoute(builder: (context) => ChatContainer(_channels[index].id, userId)),
+//                    );
                   },
                   child: Container(
                       margin: EdgeInsets.all(8),
