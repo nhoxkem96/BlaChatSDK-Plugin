@@ -50,8 +50,7 @@ class ChannelScreenState extends State<ChannelScreen> {
 
   void testFunction(BlaChannel channel) async {
     try {
-      var result = await BlaChatSdk.instance.updateChannel(channel);
-      print("test test result " + result.toString());
+      var result = await BlaChatSdk.instance.inviteUserToChannel(["b8678c7a-82f3-4a1b-b8c4-9b3cce391c20", "8c8c21b3-22e9-48a5-833c-5d25a9d5597f"], channel.id);
     } catch (e) {
       print("error test " + e.toString());
     }

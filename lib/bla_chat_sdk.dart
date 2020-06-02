@@ -456,8 +456,7 @@ class BlaChatSdk {
     }
   }
 
-  //PENDING
-  Future<bool> updateMessage(BlaMessage message) async {
+  Future<BlaMessage> updateMessage(BlaMessage message) async {
     var jsonMessage = message.toJson();
     dynamic data = await _channel
         .invokeMethod(BlaConstants.UPDATE_MESSAGE, <String, dynamic>{
@@ -466,38 +465,38 @@ class BlaChatSdk {
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
     if (isSuccess) {
-      List<dynamic> result = json.decode(valueMap["result"]);
+      var mess = BlaMessage.fromJson(json.decode(valueMap["result"]));
+      return mess;
     } else {
-
+      throw valueMap["message"];
     }
-
-    return true;
   }
 
-  //PENDING
-  Future<bool> deleteMessage(String content, String channelId,
-      BlaMessageType type, Map<String, dynamic> customData) async {
+  Future<BlaMessage> deleteMessage(BlaMessage message) async {
+    var jsonMessage = message.toJson();
     dynamic data = await _channel
         .invokeMethod(BlaConstants.DELETE_MESSAGE, <String, dynamic>{
-      'content': content,
-      'channelId': channelId,
-      'type': BlaUtils.getBlaMessageTypeRawValue(type)
+      'message': jsonMessage
     });
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
-    List<dynamic> result = json.decode(valueMap["result"]);
-//      BlaChannel channel = BlaChannel.fromJson(result[0]);
-    return true;
+    if (isSuccess) {
+      var mess = BlaMessage.fromJson(json.decode(valueMap["result"]));
+      return mess;
+    } else {
+      throw valueMap["message"];
+    }
   }
 
   Future<bool> inviteUserToChannel(
       List<String> userIds, String channelId) async {
     dynamic data = await _channel.invokeMethod(
         BlaConstants.INVITE_USER_TO_CHANNEL,
-        <String, dynamic>{'userIds': userIds, 'channelId': channelId});
-    Map valueMap = json.decode(data);
-    bool isSuccess = valueMap["isSuccess"];
-    List<dynamic> result = json.decode(valueMap["result"]);
+        <String, dynamic>{'userIds': userIds.join(","), 'channelId': channelId});
+    print("data " + data);
+//    Map valueMap = json.decode(data);
+//    bool isSuccess = valueMap["isSuccess"];
+//    List<dynamic> result = json.decode(valueMap["result"]);
 //      BlaChannel channel = BlaChannel.fromJson(result[0]);
     return true;
   }

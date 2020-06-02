@@ -440,9 +440,29 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
             }
             break
         case UPDATE_MESSAGE:
-            if let channelId = arguments["channelId"] as? String
+            if let jsonMessage = arguments["message"] as? String
             {
-                
+                let json = JSON.init(parseJSON: jsonMessage)
+                let message = BlaMessage(dao: BlaMessageDAO(json: json))
+                ChatSDK.shareInstance.updateMessage(message: message) { (messageResult, error) in
+                    if let err = error {
+                        let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
+                        let json = try! JSONSerialization.data(withJSONObject: dict)
+                        let jsonString = String(data: json, encoding: .utf8)!
+                        result(jsonString)
+                    } else {
+                        let formatter = DateFormatter()
+                        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+                        let jsonEncoder = JSONEncoder()
+                        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
+                        let jsonData = try! jsonEncoder.encode(messageResult)
+                        let jsonResult = String(data: jsonData, encoding: String.Encoding.utf8)
+                        let dict: [String: Any] = ["isSuccess": true, "result": jsonResult!];
+                        let json = try! JSONSerialization.data(withJSONObject: dict)
+                        let jsonString = String(data: json, encoding: .utf8)!
+                        result(jsonString)
+                    }
+                }
             } else {
                 let dict: [String: Any] = ["isSuccess": false, "message": "Error arguments"];
                 let json = try! JSONSerialization.data(withJSONObject: dict)
@@ -451,9 +471,29 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
             }
             break
         case DELETE_MESSAGE:
-            if let channelId = arguments["channelId"] as? String
+            if let jsonMessage = arguments["message"] as? String
             {
-                
+                let json = JSON.init(parseJSON: jsonMessage)
+                let message = BlaMessage(dao: BlaMessageDAO(json: json))
+                ChatSDK.shareInstance.deleteMessage(message: message) { (messageResult, error) in
+                    if let err = error {
+                        let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
+                        let json = try! JSONSerialization.data(withJSONObject: dict)
+                        let jsonString = String(data: json, encoding: .utf8)!
+                        result(jsonString)
+                    } else {
+                        let formatter = DateFormatter()
+                        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+                        let jsonEncoder = JSONEncoder()
+                        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
+                        let jsonData = try! jsonEncoder.encode(messageResult)
+                        let jsonResult = String(data: jsonData, encoding: String.Encoding.utf8)
+                        let dict: [String: Any] = ["isSuccess": true, "result": jsonResult!];
+                        let json = try! JSONSerialization.data(withJSONObject: dict)
+                        let jsonString = String(data: json, encoding: .utf8)!
+                        result(jsonString)
+                    }
+                }
             } else {
                 let dict: [String: Any] = ["isSuccess": false, "message": "Error arguments"];
                 let json = try! JSONSerialization.data(withJSONObject: dict)
@@ -462,10 +502,23 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
             }
             break
         case INVITE_USER_TO_CHANNEL:
-            if let userIds = arguments["userIds"] as? [String],
+            if let userIds = arguments["userIds"] as? String,
                 let channelId = arguments["channelId"] as? String
             {
-                
+                let listUserId = userIds.components(separatedBy: ",")
+                ChatSDK.shareInstance.inviteUserToChannel(userIds: listUserId, channelId: channelId) { (data, error) in
+                    if let err = error {
+                        let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
+                        let json = try! JSONSerialization.data(withJSONObject: dict)
+                        let jsonString = String(data: json, encoding: .utf8)!
+                        result(jsonString)
+                    } else {
+                        let dict: [String: Any] = ["isSuccess": true, "result": data!];
+                        let json = try! JSONSerialization.data(withJSONObject: dict)
+                        let jsonString = String(data: json, encoding: .utf8)!
+                        result(jsonString)
+                    }
+                }
             } else {
                 let dict: [String: Any] = ["isSuccess": false, "message": "Error arguments"];
                 let json = try! JSONSerialization.data(withJSONObject: dict)
@@ -477,7 +530,19 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
             if let userId = arguments["userId"] as? String,
                 let channelId = arguments["channelId"] as? String
             {
-                
+                ChatSDK.shareInstance.removeUserFromChannel(userId: userId, channelId: channelId) { (data, error) in
+                    if let err = error {
+                        let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
+                        let json = try! JSONSerialization.data(withJSONObject: dict)
+                        let jsonString = String(data: json, encoding: .utf8)!
+                        result(jsonString)
+                    } else {
+                        let dict: [String: Any] = ["isSuccess": true, "result": data!];
+                        let json = try! JSONSerialization.data(withJSONObject: dict)
+                        let jsonString = String(data: json, encoding: .utf8)!
+                        result(jsonString)
+                    }
+                }
             } else {
                 let dict: [String: Any] = ["isSuccess": false, "message": "Error arguments"];
                 let json = try! JSONSerialization.data(withJSONObject: dict)
