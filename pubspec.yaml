@@ -1,8 +1,9 @@
 name: bla_chat_sdk
 description: A new Flutter plugin.
 version: 0.0.1
-author: thuongpv@blameo.com
-homepage: https://github.com/nhoxkem96/BlaChatSDK-Plugin
+authors:
+- ThuongPV <pvthuong8896@gmail.com>
+homepage: "https://github.com/nhoxkem96/BlaChatSDK-Plugin"
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
