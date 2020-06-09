@@ -77,6 +77,7 @@ class BlaChatSdk {
         'userId': userId,
         'token': token,
       });
+      print("test data " + data);
       _channel.setMethodCallHandler((call) async {
         switch (call.method) {
           case "onNewMessage": {
@@ -253,16 +254,18 @@ class BlaChatSdk {
 
   Future<List<BlaChannel>> getChannels(String lastId, int limit) async {
     try {
+      print("run here");
       var data = await _channel
           .invokeMethod(BlaConstants.GET_CHANNELS, <String, dynamic>{
         'lastId': lastId,
         'limit': limit,
       });
+      print("data get channels "  + data.toString());
       Map valueMap = json.decode(data);
       bool isSuccess = valueMap["isSuccess"];
       if (isSuccess) {
         List<dynamic> result = json.decode(valueMap["result"]);
-        print("result " + result.toString());
+        print("result " + result.length.toString());
         List<BlaChannel> channels =
             result.map((item) => BlaChannel.fromJson(item)).toList();
         return channels;
@@ -493,12 +496,13 @@ class BlaChatSdk {
     dynamic data = await _channel.invokeMethod(
         BlaConstants.INVITE_USER_TO_CHANNEL,
         <String, dynamic>{'userIds': userIds.join(","), 'channelId': channelId});
-    print("data " + data);
-//    Map valueMap = json.decode(data);
-//    bool isSuccess = valueMap["isSuccess"];
-//    List<dynamic> result = json.decode(valueMap["result"]);
-//      BlaChannel channel = BlaChannel.fromJson(result[0]);
-    return true;
+    Map valueMap = json.decode(data);
+    bool isSuccess = valueMap["isSuccess"];
+    if (isSuccess) {
+      return true;
+    } else {
+      throw valueMap["message"];
+    }
   }
 
   Future<bool> removeUserFromChannel(String userId, String channelId) async {
@@ -507,9 +511,11 @@ class BlaChatSdk {
         <String, dynamic>{'userId': userId, 'channelId': channelId});
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
-    List<dynamic> result = json.decode(valueMap["result"]);
-//      BlaChannel channel = BlaChannel.fromJson(result[0]);
-    return true;
+    if (isSuccess) {
+      return true;
+    } else {
+      throw valueMap["message"];
+    }
   }
 
   Future<List<BlaUserPresence>> getUserPresence() async {
@@ -517,8 +523,10 @@ class BlaChatSdk {
         .invokeMethod(BlaConstants.GET_USER_PRESENCE, <String, dynamic>{});
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
-    List<dynamic> result = json.decode(valueMap["result"]);
-//      BlaChannel channel = BlaChannel.fromJson(result[0]);
-    return [];
+    if (isSuccess) {
+      return [];
+    } else {
+      throw valueMap["message"];
+    }
   }
 }

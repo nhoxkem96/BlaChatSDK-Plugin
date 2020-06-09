@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'chatcontent.dart';
 import 'package:bla_chat_sdk/bla_chat_sdk.dart';
 import 'dart:async';
+import 'package:bla_chat_sdk/BlaUser.dart';
+import 'package:bla_chat_sdk/EventType.dart';
+import 'package:bla_chat_sdk/BlaChannel.dart';
 
 
 class ChatContainer extends StatefulWidget {
@@ -37,8 +40,18 @@ class _ChatContainerState extends State<ChatContainer> {
     listenTypingEvent();
   }
 
-  void listenTypingEvent(){
-    Timer timer;
+  void listenTypingEvent() async {
+
+    await BlaChatSdk.instance.addChannelListener(new ChannelListener(
+        onTyping: (BlaChannel channel, BlaUser user, EventType type) {
+          print("onTyping in message screen");
+        }
+    ));
+    await BlaChatSdk.instance.addMessageListener(new MessageListener(
+      onNewMessage: (message) {
+        print("have new message in message screen: " + message.content);
+      }
+    ));
 //    Blachat.instance.addTypingListener((String channelID, String userID, int time, bool isTyping) {
 //      if (mounted){
 //        if (channelID == conversationID && DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000 - time < 5000 ) {

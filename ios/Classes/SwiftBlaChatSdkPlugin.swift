@@ -60,7 +60,7 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
                 ChatSDK.shareInstance.addMessageListener(delegate: self as BlaMessageDelegate)
                 ChatSDK.shareInstance.addChannelListener(delegate: self as BlaChannelDelegate)
                 ChatSDK.shareInstance.addPresenceListener(delegate: self as BlaPresenceListener)
-                let dict: [String: Any] = ["isSuccess": false, "result": true];
+                let dict: [String: Any] = ["isSuccess": true, "result": true];
                 let json = try! JSONSerialization.data(withJSONObject: dict)
                 let jsonString = String(data: json, encoding: .utf8)!
                 result(jsonString)

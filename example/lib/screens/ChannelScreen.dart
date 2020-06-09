@@ -36,7 +36,14 @@ class ChannelScreenState extends State<ChannelScreen> {
   void addListener() async {
     await BlaChatSdk.instance.addChannelListener(new ChannelListener(
       onTyping: (BlaChannel channel, BlaUser user, EventType type) {
+        print("onTyping in channel screen");
       }
+    ));
+
+    await BlaChatSdk.instance.addMessageListener(new MessageListener(
+        onNewMessage: (message) {
+          print("have new message in channel screen: " + message.content);
+        }
     ));
   }
 
@@ -82,11 +89,11 @@ class ChannelScreenState extends State<ChannelScreen> {
             itemBuilder: (BuildContext context, int index) {
               return InkWell (
                   onTap: () {
-                    this.testFunction(_channels[index]);
-//                    Navigator.push(
-//                      context,
-//                      MaterialPageRoute(builder: (context) => ChatContainer(_channels[index].id, userId)),
-//                    );
+//                    this.testFunction(_channels[index]);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ChatContainer(_channels[index].id, userId)),
+                    );
                   },
                   child: Container(
                       margin: EdgeInsets.all(8),
