@@ -77,7 +77,6 @@ class BlaChatSdk {
         'userId': userId,
         'token': token,
       });
-      print("test data " + data);
       _channel.setMethodCallHandler((call) async {
         switch (call.method) {
           case "onNewMessage": {
@@ -163,6 +162,7 @@ class BlaChatSdk {
             break;
           }
           case "onTyping": {
+            print("run ontyping ");
             var channel = BlaChannel.fromJson(json.decode(call.arguments["channel"]));
             var user = BlaUser.fromJson(json.decode(call.arguments["user"]));
             var type = BlaUtils.initEventType(call.arguments["type"]);

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import android.util.Log
 import com.blameo.chatsdk.blachat.*
 import com.blameo.chatsdk.models.bla.*
 import com.blameo.chatsdk.models.entities.User
@@ -54,18 +55,18 @@ class BlaChatSdkPlugin : MethodCallHandler {
   val SHARED_PREFERENCES_NAME = "shared_preference"
   private var context: Activity? = null
   private var channel: MethodChannel? = null
-
+  var myGson =  GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create()
   companion object {
     @JvmStatic
     fun registerWith(registrar: Registrar) {
       val channel = MethodChannel(registrar.messenger(), "bla_chat_sdk")
       val bien = BlaChatSdkPlugin();
-      bien.setupChannel(registrar.messenger(), registrar.activity())
+      bien.setupChannel(registrar.messenger(), registrar.activity(), channel)
       channel.setMethodCallHandler(bien)
     }
   }
 
-  private fun setupChannel(messenger: BinaryMessenger, activity: Activity) {
+  private fun setupChannel(messenger: BinaryMessenger, activity: Activity, channel: MethodChannel) {
     this.channel = channel
     this.context = activity
   }
@@ -86,35 +87,161 @@ class BlaChatSdkPlugin : MethodCallHandler {
         sharedPreferences?.edit()?.putString("token", token)
         BlaChatSDK.getInstance().addChannelListener(object: ChannelEventListener{
           override fun onMemberLeave(p0: BlaChannel?, p1: BlaUser?) {
-            print("1")
+            this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
+              override fun run() {
+                var dict = HashMap<String, Any>()
+                dict["channel"] = myGson.toJson(p0)
+                dict["user"] = myGson.toJson(p1)
+                this@BlaChatSdkPlugin.channel!!.invokeMethod("onMemberLeave", dict)
+              }
+            })
           }
 
           override fun onUserReceiveMessage(p0: BlaChannel?, p1: BlaUser?, p2: BlaMessage?) {
-            print("2")
+            this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
+              override fun run() {
+                var dict = HashMap<String, Any>()
+                dict["channel"] = myGson.toJson(p0)
+                dict["user"] = myGson.toJson(p1)
+                dict["message"] = myGson.toJson(p2)
+                this@BlaChatSdkPlugin.channel!!.invokeMethod("onUserReceiveMessage", dict)
+              }
+            })
           }
 
           override fun onDeleteChannel(p0: BlaChannel?) {
-            print("3")
+            this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
+              override fun run() {
+                var dict = HashMap<String, Any>()
+                dict["channel"] = myGson.toJson(p0)
+                this@BlaChatSdkPlugin.channel!!.invokeMethod("onDeleteChannel", dict)
+              }
+            })
           }
 
           override fun onTyping(p0: BlaChannel?, p1: BlaUser?, p2: EventType?) {
-            print("4")
+            this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
+              override fun run() {
+                var dict = HashMap<String, Any>()
+                dict["channel"] = myGson.toJson(p0)
+                dict["user"] = myGson.toJson(p1)
+                dict["type"] = if(p2 == EventType.START) 1 else 0
+                this@BlaChatSdkPlugin.channel!!.invokeMethod("onTyping", dict)
+              }
+            })
           }
 
           override fun onNewChannel(p0: BlaChannel?) {
-            print("5")
+            this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
+              override fun run() {
+                var dict = HashMap<String, Any>()
+                dict["channel"] = myGson.toJson(p0)
+                this@BlaChatSdkPlugin.channel!!.invokeMethod("onNewChannel", dict)
+              }
+            })
           }
 
           override fun onUserSeenMessage(p0: BlaChannel?, p1: BlaUser?, p2: BlaMessage?) {
-            print("6")
+            this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
+              override fun run() {
+                var dict = HashMap<String, Any>()
+                dict["channel"] = myGson.toJson(p0)
+                dict["user"] = myGson.toJson(p1)
+                dict["message"] = myGson.toJson(p2)
+                this@BlaChatSdkPlugin.channel!!.invokeMethod("onUserSeenMessage", dict)
+              }
+            })
           }
 
           override fun onUpdateChannel(p0: BlaChannel?) {
-            print("7")
+            this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
+              override fun run() {
+                var dict = HashMap<String, Any>()
+                dict["channel"] = myGson.toJson(p0)
+                this@BlaChatSdkPlugin.channel!!.invokeMethod("onUpdateChannel", dict)
+              }
+            })
           }
 
           override fun onMemberJoin(p0: BlaChannel?, p1: BlaUser?) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
+              override fun run() {
+                var dict = HashMap<String, Any>()
+                dict["channel"] = myGson.toJson(p0)
+                dict["user"] = myGson.toJson(p1)
+                this@BlaChatSdkPlugin.channel!!.invokeMethod("onMemberJoin", dict)
+              }
+            })
+          }
+        })
+
+        BlaChatSDK.getInstance().addMessageListener(object: MessagesListener{
+          override fun onNewMessage(p0: BlaMessage?) {
+            this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
+              override fun run() {
+                var dict = HashMap<String, Any>()
+                dict["message"] = myGson.toJson(p0)
+                this@BlaChatSdkPlugin.channel!!.invokeMethod("onNewMessage", dict)
+              }
+            })
+          }
+
+          override fun onUpdateMessage(p0: BlaMessage?) {
+            this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
+              override fun run() {
+                var dict = HashMap<String, Any>()
+                dict["message"] = myGson.toJson(p0)
+                this@BlaChatSdkPlugin.channel!!.invokeMethod("onUpdateMessage", dict)
+              }
+            })
+          }
+
+          override fun onDeleteMessage(p0: BlaMessage?) {
+            this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
+              override fun run() {
+                var dict = HashMap<String, Any>()
+                dict["message"] = myGson.toJson(p0)
+                this@BlaChatSdkPlugin.channel!!.invokeMethod("onDeleteMessage", dict)
+              }
+            })
+          }
+
+          override fun onUserSeen(p0: BlaMessage?, p1: BlaUser?, p2: Date?) {
+            this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
+              override fun run() {
+                var dict = HashMap<String, Any>()
+                dict["message"] = myGson.toJson(p0)
+                dict["user"] = myGson.toJson(p1)
+                dict["seenAt"] = p2!!.time
+                this@BlaChatSdkPlugin.channel!!.invokeMethod("onUserSeen", dict)
+              }
+            })
+          }
+
+          override fun onUserReceive(p0: BlaMessage?, p1: BlaUser?, p2: Date?) {
+            this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
+              override fun run() {
+                var dict = HashMap<String, Any>()
+                dict["message"] = myGson.toJson(p0)
+                dict["user"] = myGson.toJson(p1)
+                dict["receivedAt"] = p2!!.time
+                this@BlaChatSdkPlugin.channel!!.invokeMethod("onUserReceive", dict)
+              }
+            })
+          }
+        })
+
+        BlaChatSDK.getInstance().addPresenceListener(object: BlaPresenceListener{
+          override fun onUpdate(p0: BlaUserPresence?) {
+            this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
+              override fun run() {
+//                var dict = HashMap<String, Any>()
+//                dict["channel"] = myGson.toJson(p0)
+//                dict["user"] = myGson.toJson(p1)
+//                dict["type"] = if(p2 == EventType.START) 1 else 0
+//                this@BlaChatSdkPlugin.channel!!.invokeMethod("onTyping", dict)
+              }
+            })
           }
         })
         var dict = HashMap<String, Any>()
