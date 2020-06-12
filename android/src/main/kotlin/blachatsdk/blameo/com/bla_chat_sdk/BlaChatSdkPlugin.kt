@@ -811,7 +811,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
           override fun onFail(p0: Exception?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
               override fun run() {
-                ar dict = HashMap<String, Any>()
+                var dict = HashMap<String, Any>()
                 dict["isSuccess"] = false
                 dict["message"] = p0.toString()
                 val jsonString = Gson().toJson(dict);
