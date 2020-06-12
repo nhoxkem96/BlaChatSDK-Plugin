@@ -265,9 +265,9 @@ class BlaChatSdk {
       bool isSuccess = valueMap["isSuccess"];
       if (isSuccess) {
         List<dynamic> result = json.decode(valueMap["result"]);
-        print("result " + result.length.toString());
         List<BlaChannel> channels =
             result.map((item) => BlaChannel.fromJson(item)).toList();
+        print("channels " + channels.length.toString());
         return channels;
       } else {
         throw valueMap["message"];
@@ -297,7 +297,7 @@ class BlaChatSdk {
   Future<List<BlaUser>> getUsers(List<String> userIds) async {
     dynamic data =
         await _channel.invokeMethod(BlaConstants.GET_USERS, <String, dynamic>{
-      'userIds': userIds,
+      'userIds': userIds.join(","),
     });
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
@@ -334,7 +334,7 @@ class BlaChatSdk {
   Future<BlaChannel> createChannel(
       String name, List<String> userIds, BlaChannelType type) async {
     dynamic data = await _channel.invokeMethod(BlaConstants.CREATE_CHANNEL,
-        <String, dynamic>{'name': name, 'userIds': userIds, 'type': type});
+        <String, dynamic>{'name': name, 'userIds': userIds.join(","), 'type': type});
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
     if (isSuccess) {

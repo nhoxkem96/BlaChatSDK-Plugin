@@ -11,7 +11,7 @@ class BlaUser {
     id = json["id"];
     name = json["name"];
     avatar = json["avatar"];
-    customData = json["customData"];
+    customData = json["customData"].toString();
     online = json["online"];
   }
 

@@ -20,7 +20,7 @@ class BlaChannel {
     createdAt = DateTime.parse(data["createdAt"]);
     updatedAt = DateTime.parse(data["updatedAt"]);
     type = data["type"];
-    customData = data["customData"];
+    customData = data["customData"].toString();
     lastMessageId = data["lastMessageId"];
     if (data["lastMessage"] != null) {
       lastMessage = BlaMessage.fromJson(data["lastMessage"]);

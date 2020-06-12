@@ -155,9 +155,10 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
             }
             break
         case GET_USERS:
-            if let userIds = arguments["userIds"] as? [String]
+            if let userIds = arguments["userIds"] as? String
             {
-                ChatSDK.shareInstance.getUsers(userIds: userIds) { (users, error) in
+                let listUserId = userIds.components(separatedBy: ",")
+                ChatSDK.shareInstance.getUsers(userIds: listUserId) { (users, error) in
                     if let err = error {
                         let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
                         let json = try! JSONSerialization.data(withJSONObject: dict)
@@ -216,14 +217,15 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
             break
         case CREATE_CHANNEL:
             if let name = arguments["name"] as? String,
-                let userIds = arguments["userIds"] as? [String],
+                let userIds = arguments["userIds"] as? String,
                 let type = arguments["type"] as? Int
             {
                 var channelType = BlaChannelType.GROUP
                 if type == 2 {
                     channelType = BlaChannelType.DIRECT
                 }
-                ChatSDK.shareInstance.createChannel(name: name, userIds: userIds, type: channelType) { (channel, error) in
+                let listUserId = userIds.components(separatedBy: ",")
+                ChatSDK.shareInstance.createChannel(name: name, userIds: listUserId, type: channelType) { (channel, error) in
                     if let err = error {
                         let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
                         let json = try! JSONSerialization.data(withJSONObject: dict)

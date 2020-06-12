@@ -20,13 +20,14 @@ class BlaMessage {
   List<BlaUser> seenBy;
 
   BlaMessage.fromJson(Map<String, dynamic> json) {
+    print("parse message " + json.toString());
     id = json["id"];
     authorId = json["authorId"];
     channelId = json["channelId"];
     content = json["content"];
     type = BlaUtils.initBlaMessageType(json["type"]);
     isSystemMessage = json["isSystemMessage"];
-    customData = json["customData"];
+    customData = json["customData"].toString();
     createdAt = DateTime.parse(json["createdAt"]);
     updatedAt = json["updatedAt"] != null ? DateTime.parse(json["updatedAt"]) : DateTime.parse(json["createdAt"]);
     sentAt = DateTime.parse(json["sentAt"]);
