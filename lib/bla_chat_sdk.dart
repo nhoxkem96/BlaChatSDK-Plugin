@@ -162,7 +162,6 @@ class BlaChatSdk {
             break;
           }
           case "onTyping": {
-            print("run ontyping ");
             var channel = BlaChannel.fromJson(json.decode(call.arguments["channel"]));
             var user = BlaUser.fromJson(json.decode(call.arguments["user"]));
             var type = BlaUtils.initEventType(call.arguments["type"]);
@@ -196,6 +195,7 @@ class BlaChatSdk {
       return false;
     }
   }
+
 
 
   Future<bool> addMessageListener(MessageListener listener) async {
@@ -254,20 +254,17 @@ class BlaChatSdk {
 
   Future<List<BlaChannel>> getChannels(String lastId, int limit) async {
     try {
-      print("run here");
       var data = await _channel
           .invokeMethod(BlaConstants.GET_CHANNELS, <String, dynamic>{
         'lastId': lastId,
         'limit': limit,
       });
-      print("data get channels "  + data.toString());
       Map valueMap = json.decode(data);
       bool isSuccess = valueMap["isSuccess"];
       if (isSuccess) {
         List<dynamic> result = json.decode(valueMap["result"]);
         List<BlaChannel> channels =
             result.map((item) => BlaChannel.fromJson(item)).toList();
-        print("channels " + channels.length.toString());
         return channels;
       } else {
         throw valueMap["message"];
@@ -384,7 +381,6 @@ class BlaChatSdk {
     });
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
-    print("start typing " + isSuccess.toString());
     if (isSuccess) {
       return json.decode(valueMap["result"]);
     } else {
@@ -399,7 +395,6 @@ class BlaChatSdk {
     });
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
-    print("stop typing " + isSuccess.toString());
     if (isSuccess) {
       return json.decode(valueMap["result"]);
     } else {
