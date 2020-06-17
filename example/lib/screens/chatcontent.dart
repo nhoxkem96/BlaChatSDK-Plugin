@@ -168,7 +168,10 @@ class ChatContentState extends State<ChatContent> {
   void _handleSubmit(String text) async {
     try {
       _chatController.clear();
-      var message = await BlaChatSdk.instance.createMessage(text, this.channelID, BlaMessageType.TEXT, null);
+      var customData = Map<String, dynamic>();
+      customData["TestString"] = "test";
+      customData["TestNumber"] = 1;
+      var message = await BlaChatSdk.instance.createMessage(text, this.channelID, BlaMessageType.TEXT, customData);
       print("send message success " + message.toString());
       if (mounted) {
         setState(() {

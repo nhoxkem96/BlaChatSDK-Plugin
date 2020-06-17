@@ -55,11 +55,11 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
             if let userId = arguments["userId"] as? String,
                 let token = arguments["token"] as? String
             {
-                UserDefaults.standard.setValue(userId, forKey: "userId")
-                UserDefaults.standard.setValue(token, forKey: "token")
                 ChatSDK.shareInstance.addMessageListener(delegate: self as BlaMessageDelegate)
                 ChatSDK.shareInstance.addChannelListener(delegate: self as BlaChannelDelegate)
                 ChatSDK.shareInstance.addPresenceListener(delegate: self as BlaPresenceListener)
+                ChatSDK.shareInstance.initBlaChatSDK(userId: userId, token: token) { (data, error) in
+                }
                 let dict: [String: Any] = ["isSuccess": true, "result": true];
                 let json = try! JSONSerialization.data(withJSONObject: dict)
                 let jsonString = String(data: json, encoding: .utf8)!
@@ -220,12 +220,16 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
                 let userIds = arguments["userIds"] as? String,
                 let type = arguments["type"] as? Int
             {
-                var channelType = BlaChannelType.GROUP
-                if type == 2 {
-                    channelType = BlaChannelType.DIRECT
-                }
+                var channelType = BlaChannelType.init(rawValue: type)
                 let listUserId = userIds.components(separatedBy: ",")
-                ChatSDK.shareInstance.createChannel(name: name, userIds: listUserId, type: channelType) { (channel, error) in
+                var customData: [String: Any]?
+                if let customDataString = arguments["customData"] as? String, let data = customDataString.data(using: .utf8) {
+                    do {
+                        customData = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                    } catch {
+                    }
+                }
+                ChatSDK.shareInstance.createChannel(name: name, userIds: listUserId, type: channelType, customData: customData ?? [String: Any]()) { (channel, error) in
                     if let err = error {
                         let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
                         let json = try! JSONSerialization.data(withJSONObject: dict)
@@ -415,7 +419,15 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
                 let channelId = arguments["channelId"] as? String,
                 let type = arguments["type"] as? Int
             {
-                ChatSDK.shareInstance.createMessage(content: content, channelId: channelId, type: BlaMessageType.TEXT, customData: nil) { (data, error) in
+                var messageType = BlaMessageType.init(rawValue: type)
+                var customData: [String: Any]?
+                if let customDataString = arguments["customData"] as? String, let data = customDataString.data(using: .utf8) {
+                    do {
+                        customData = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                    } catch {
+                    }
+                }
+                ChatSDK.shareInstance.createMessage(content: content, channelId: channelId, type: messageType, customData: customData) { (data, error) in
                     if let err = error {
                         let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
                         let json = try! JSONSerialization.data(withJSONObject: dict)
@@ -562,9 +574,32 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
     }
     
     // BlaChatSDK delegate
-    public func onUpdate(userPresence: [BlaUserPresence]) {
-        
+    public func onUpdate(userPresence: [BlaUser]) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
+
+        let jsonData1 = try! jsonEncoder.encode(userPresence)
+        let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
+
+        self._channel.invokeMethod("onNewChannel", arguments: [
+            "userPresence": jsonResult1!,
+        ]);
     }
+//    func onUpdate(userPresence: [BlaUser]) {
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+//        let jsonEncoder = JSONEncoder()
+//        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
+//
+//        let jsonData1 = try! jsonEncoder.encode(channel)
+//        let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
+//
+//        self._channel.invokeMethod("onNewChannel", arguments: [
+//            "userPresence": jsonResult1!,
+//        ]);
+//    }
     
     public func onNewChannel(channel: BlaChannel) {
         let formatter = DateFormatter()

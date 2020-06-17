@@ -10,7 +10,6 @@ import 'BlaUser.dart';
 import 'EventType.dart';
 import 'BlaConstants.dart';
 import 'BlaUtils.dart';
-import 'BlaUserPresence.dart';
 
 class MessageListener {
 
@@ -27,7 +26,7 @@ class PresenceListener {
 
   PresenceListener({this.onUpdate});
 
-  Function(List<BlaUserPresence> users) onUpdate;
+  Function(List<BlaUser> users) onUpdate;
 }
 
 class ChannelListener {
@@ -329,9 +328,10 @@ class BlaChatSdk {
   }
 
   Future<BlaChannel> createChannel(
-      String name, List<String> userIds, BlaChannelType type) async {
+      String name, List<String> userIds, BlaChannelType type, Map<String, dynamic> customData) async {
+    var customDataString = json.encode(customData);
     dynamic data = await _channel.invokeMethod(BlaConstants.CREATE_CHANNEL,
-        <String, dynamic>{'name': name, 'userIds': userIds.join(","), 'type': type});
+        <String, dynamic>{'name': name, 'userIds': userIds.join(","), 'type': type, 'customData': customDataString});
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
     if (isSuccess) {
@@ -438,11 +438,13 @@ class BlaChatSdk {
 
   Future<BlaMessage> createMessage(String content, String channelId,
       BlaMessageType type, Map<String, dynamic> customData) async {
+    var customDataString = json.encode(customData);
     dynamic data = await _channel
         .invokeMethod(BlaConstants.CREATE_MESSAGE, <String, dynamic>{
       'content': content,
       'channelId': channelId,
-      'type': BlaUtils.getBlaMessageTypeRawValue(type)
+      'type': BlaUtils.getBlaMessageTypeRawValue(type),
+      'customData': customDataString
     });
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
@@ -513,7 +515,7 @@ class BlaChatSdk {
     }
   }
 
-  Future<List<BlaUserPresence>> getUserPresence() async {
+  Future<List<BlaUser>> getUserPresence() async {
     dynamic data = await _channel
         .invokeMethod(BlaConstants.GET_USER_PRESENCE, <String, dynamic>{});
     Map valueMap = json.decode(data);

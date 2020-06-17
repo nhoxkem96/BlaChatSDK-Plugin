@@ -33,17 +33,16 @@ class _MyAppState extends State<MyApp> {
   }
 
   void loginUser1(BuildContext context) async {
-    String userId = "5d3669da-6058-4cb6-a02f-ace20f0a54cc";
-    String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaGFubmVsIjoiJGNoYXQ6NWQzNjY5ZGEtNjA1OC00Y2I2LWEwMmYtYWNlMjBmMGE1NGNjIiwiY2xpZW50IjoiNWQzNjY5ZGEtNjA1OC00Y2I2LWEwMmYtYWNlMjBmMGE1NGNjIiwiZXhwIjoxNTkzMjMxMjY4LCJzdWIiOiI1ZDM2NjlkYS02MDU4LTRjYjYtYTAyZi1hY2UyMGYwYTU0Y2MiLCJ1c2VySWQiOiI1ZDM2NjlkYS02MDU4LTRjYjYtYTAyZi1hY2UyMGYwYTU0Y2MifQ.p5-W9mxkcdvwcb98wtC9tCsgpe4eVr096vUmYoq9GUI";
-
+    String userId = "817540b0-b471-429d-a6bb-ad5fa755b837";
+    String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaGFubmVsIjoiJGNoYXQ6ODE3NTQwYjAtYjQ3MS00MjlkLWE2YmItYWQ1ZmE3NTViODM3IiwiY2xpZW50IjoiODE3NTQwYjAtYjQ3MS00MjlkLWE2YmItYWQ1ZmE3NTViODM3IiwiZXhwIjoxNTk0OTczOTUyLCJzdWIiOiI4MTc1NDBiMC1iNDcxLTQyOWQtYTZiYi1hZDVmYTc1NWI4MzciLCJ1c2VySWQiOiI4MTc1NDBiMC1iNDcxLTQyOWQtYTZiYi1hZDVmYTc1NWI4MzcifQ.vp_j5VPaRwnBEa37k3LJYpc8ZgRBrCyYV3LV0ZoY4rU";
     var test = await BlaChatSdk.instance.initBlaChatSDK(userId, token);
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => ChannelScreen(userId)));
   }
 
   void loginUser2(BuildContext context) async {
-    String userId = "a332046b-1e34-419d-b6d4-b555b5d30ab8";
-    String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaGFubmVsIjoiJGNoYXQ6YTMzMjA0NmItMWUzNC00MTlkLWI2ZDQtYjU1NWI1ZDMwYWI4IiwiY2xpZW50IjoiYTMzMjA0NmItMWUzNC00MTlkLWI2ZDQtYjU1NWI1ZDMwYWI4IiwiZXhwIjoxNTkyOTE4ODUzLCJzdWIiOiJhMzMyMDQ2Yi0xZTM0LTQxOWQtYjZkNC1iNTU1YjVkMzBhYjgiLCJ1c2VySWQiOiJhMzMyMDQ2Yi0xZTM0LTQxOWQtYjZkNC1iNTU1YjVkMzBhYjgifQ.wEnOmhCTI_o3vUWymPrefAg2AqlEuUEcda4xYgwqgPs";
+    String userId = "fb36cadb-5f6c-4dec-9e8e-4b1dd7940e11";
+    String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaGFubmVsIjoiJGNoYXQ6ZmIzNmNhZGItNWY2Yy00ZGVjLTllOGUtNGIxZGQ3OTQwZTExIiwiY2xpZW50IjoiZmIzNmNhZGItNWY2Yy00ZGVjLTllOGUtNGIxZGQ3OTQwZTExIiwiZXhwIjoxNTk0OTc0MDcwLCJzdWIiOiJmYjM2Y2FkYi01ZjZjLTRkZWMtOWU4ZS00YjFkZDc5NDBlMTEiLCJ1c2VySWQiOiJmYjM2Y2FkYi01ZjZjLTRkZWMtOWU4ZS00YjFkZDc5NDBlMTEifQ.Fr7hKpbRr5lFzF6FdApI5V-Eht-JO1omx7Gxx9_Tn8Q";
     await BlaChatSdk.instance.initBlaChatSDK(userId, token);
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => ChannelScreen(userId)));

@@ -180,6 +180,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
             this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
               override fun run() {
                 var dict = HashMap<String, Any>()
+                Log.i("test", "onNewMessage ")
                 dict["message"] = myGson.toJson(p0)
                 this@BlaChatSdkPlugin.channel!!.invokeMethod("onNewMessage", dict)
               }

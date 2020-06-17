@@ -25,7 +25,8 @@ class CreateChannelScreenState extends State<CreateChannelScreen> {
 
   void createChannel(String name) async {
     try {
-      var channel = BlaChatSdk.instance.createChannel(name, ["e7cc8f40-30f7-41ab-a081-4a31ba6f1279"], BlaChannelType.GROUP);
+      Map<String, dynamic> customData = Map<String, dynamic>();
+      var channel = await BlaChatSdk.instance.createChannel(name, ["e7cc8f40-30f7-41ab-a081-4a31ba6f1279"], BlaChannelType.GROUP, customData);
       Navigator.pop(context);
     } catch (e) {
       print("error create channel " + e);

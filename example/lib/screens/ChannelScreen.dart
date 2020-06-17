@@ -5,6 +5,7 @@ import 'chatcontainer.dart';
 import 'package:bla_chat_sdk/BlaUser.dart';
 import 'package:bla_chat_sdk/EventType.dart';
 import 'CreateChannel.dart';
+import 'package:bla_chat_sdk/BlaChannelType.dart';
 
 class ChannelScreen extends StatefulWidget {
 
@@ -63,6 +64,18 @@ class ChannelScreenState extends State<ChannelScreen> {
     }
   }
 
+  void createChannel(String name) async {
+    try {
+      Map<String, dynamic> customData = Map<String, dynamic>();
+      customData["test"] = "haha";
+      customData["test number"] = 1;
+      var channel = await BlaChatSdk.instance.createChannel(name, ["e7cc8f40-30f7-41ab-a081-4a31ba6f1279"], BlaChannelType.GROUP, customData);
+      Navigator.pop(context);
+    } catch (e) {
+      print("error create channel " + e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -74,11 +87,12 @@ class ChannelScreenState extends State<ChannelScreen> {
             icon: Icon(Icons.add),
             iconSize: 30,
             onPressed: () {
-              print("run here");
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CreateChannelScreen(this.userId)),
-              );
+//              print("run here");
+//              Navigator.push(
+//                context,
+//                MaterialPageRoute(builder: (context) => CreateChannelScreen(this.userId)),
+//              );
+              this.createChannel("test");
             },
           )
         ],
