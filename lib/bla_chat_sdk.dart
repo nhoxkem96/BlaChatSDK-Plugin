@@ -5,7 +5,6 @@ import 'BlaChannel.dart';
 import 'BlaMessage.dart';
 import 'BlaChannelType.dart';
 import 'BlaMessageType.dart';
-import 'BlaPresenceState.dart';
 import 'BlaUser.dart';
 import 'EventType.dart';
 import 'BlaConstants.dart';
@@ -79,8 +78,11 @@ class BlaChatSdk {
       _channel.setMethodCallHandler((call) async {
         switch (call.method) {
           case "onNewMessage": {
+            print("run here onNewMessage " + call.toString());
             var message = BlaMessage.fromJson(json.decode(call.arguments["message"]));
+            print("message lintener count " + messageListeners.length.toString());
             for (MessageListener listener in messageListeners) {
+              print("message lintener");
               listener.onNewMessage(message);
             }
             break;

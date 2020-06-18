@@ -58,7 +58,7 @@ class ChannelScreenState extends State<ChannelScreen> {
 
   void testFunction(BlaChannel channel) async {
     try {
-      var result = await BlaChatSdk.instance.inviteUserToChannel(["b8678c7a-82f3-4a1b-b8c4-9b3cce391c20", "8c8c21b3-22e9-48a5-833c-5d25a9d5597f"], channel.id);
+      var result = await BlaChatSdk.instance.updateChannel(channel);
     } catch (e) {
       print("error test " + e.toString());
     }
@@ -103,11 +103,11 @@ class ChannelScreenState extends State<ChannelScreen> {
             itemBuilder: (BuildContext context, int index) {
               return InkWell (
                   onTap: () {
-//                    this.testFunction(_channels[index]);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ChatContainer(_channels[index].id, userId)),
-                    );
+                    this.testFunction(_channels[index]);
+//                    Navigator.push(
+//                      context,
+//                      MaterialPageRoute(builder: (context) => ChatContainer(_channels[index].id, userId)),
+//                    );
                   },
                   child: Container(
                       margin: EdgeInsets.all(8),

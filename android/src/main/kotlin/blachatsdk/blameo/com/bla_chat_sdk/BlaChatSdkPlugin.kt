@@ -79,12 +79,10 @@ class BlaChatSdkPlugin : MethodCallHandler {
       val sharedPreferences = context?.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
       val userId = arguments["userId"] as String;
       val token = arguments["token"] as String;
-      BlaChatSDK.getInstance().init(this.context, userId, token);
 
       if (userId != null && token != null) {
-        // save
-        sharedPreferences?.edit()?.putString("user_id", userId)
-        sharedPreferences?.edit()?.putString("token", token)
+        BlaChatSDK.getInstance().init(this.context, userId, token);
+
         BlaChatSDK.getInstance().addChannelListener(object: ChannelEventListener{
           override fun onMemberLeave(p0: BlaChannel?, p1: BlaUser?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {

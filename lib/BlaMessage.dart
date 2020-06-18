@@ -11,7 +11,7 @@ class BlaMessage {
   String content;
   BlaMessageType type;
   bool isSystemMessage;
-  String customData;
+  Map<String, dynamic> customData;
   DateTime createdAt;
   DateTime updatedAt;
   DateTime sentAt;
@@ -19,21 +19,21 @@ class BlaMessage {
   List<BlaUser> receivedBy;
   List<BlaUser> seenBy;
 
-  BlaMessage.fromJson(Map<String, dynamic> json) {
-    id = json["id"];
-    authorId = json["authorId"];
-    channelId = json["channelId"];
-    content = json["content"];
-    type = BlaUtils.initBlaMessageType(json["type"]);
-    isSystemMessage = json["isSystemMessage"];
-    customData = json["customData"].toString();
-    createdAt = DateTime.parse(json["createdAt"]);
-    updatedAt = json["updatedAt"] != null ? DateTime.parse(json["updatedAt"]) : DateTime.parse(json["createdAt"]);
-    sentAt = DateTime.parse(json["sentAt"]);
-    author = BlaUser.fromJson(json["author"]);
-    List<dynamic> listReceivedBy = json["receivedBy"];
+  BlaMessage.fromJson(Map<String, dynamic> data) {
+    id = data["id"];
+    authorId = data["authorId"];
+    channelId = data["channelId"];
+    content = data["content"];
+    type = BlaUtils.initBlaMessageType(data["type"]);
+    isSystemMessage = data["isSystemMessage"];
+    customData = data["customData"];
+    createdAt = DateTime.parse(data["createdAt"]);
+    updatedAt = data["updatedAt"] != null ? DateTime.parse(data["updatedAt"]) : DateTime.parse(data["createdAt"]);
+    sentAt = DateTime.parse(data["sentAt"]);
+    author = BlaUser.fromJson(data["author"]);
+    List<dynamic> listReceivedBy = data["receivedBy"];
     receivedBy = listReceivedBy.map((item) => BlaUser.fromJson(item)).toList();
-    List<dynamic> listSeenBy = json["seenBy"];
+    List<dynamic> listSeenBy = data["seenBy"];
     seenBy = listSeenBy.map((item) => BlaUser.fromJson(item)).toList();
   }
 

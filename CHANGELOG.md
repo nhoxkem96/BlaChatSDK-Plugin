@@ -8,3 +8,6 @@ TODO: Bridge android
 
 ## 0.0.3
 TODO: Change kotlin version
+
+## 0.0.4
+TODO: Fix bug

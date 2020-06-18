@@ -9,7 +9,7 @@ class BlaChannel {
   DateTime createdAt;
   DateTime updatedAt;
   int type;
-  String customData;
+  Map<String, dynamic> customData;
   String lastMessageId;
   BlaMessage lastMessage;
 
@@ -20,7 +20,8 @@ class BlaChannel {
     createdAt = DateTime.parse(data["createdAt"]);
     updatedAt = DateTime.parse(data["updatedAt"]);
     type = data["type"];
-    customData = data["customData"].toString();
+    customData = data["customData"];
+    print("custom data " + this.customData.toString());
     lastMessageId = data["lastMessageId"];
     if (data["lastMessage"] != null) {
       lastMessage = BlaMessage.fromJson(data["lastMessage"]);
