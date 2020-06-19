@@ -11,3 +11,15 @@ TODO: Change kotlin version
 
 ## 0.0.4
 TODO: Fix bug
+
+## 0.0.5
+TODO: Fix bug
+
+## 0.0.6
+TODO: Fix bug
+
+## 0.0.7
+TODO: Fix bug
+
+## 0.0.8
+TODO: Fix bug

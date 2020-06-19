@@ -55,6 +55,8 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
             if let userId = arguments["userId"] as? String,
                 let token = arguments["token"] as? String
             {
+                UserDefaults.standard.setValue(userId, forKey: "userId")
+                UserDefaults.standard.setValue(token, forKey: "token")
                 ChatSDK.shareInstance.addMessageListener(delegate: self as BlaMessageDelegate)
                 ChatSDK.shareInstance.addChannelListener(delegate: self as BlaChannelDelegate)
                 ChatSDK.shareInstance.addPresenceListener(delegate: self as BlaPresenceListener)
@@ -583,7 +585,7 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
         let jsonData1 = try! jsonEncoder.encode(userPresence)
         let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
 
-        self._channel.invokeMethod("onNewChannel", arguments: [
+        self._channel.invokeMethod("onUpdate", arguments: [
             "userPresence": jsonResult1!,
         ]);
     }

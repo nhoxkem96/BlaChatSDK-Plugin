@@ -8,10 +8,11 @@ class BlaChannel {
   String avatar;
   DateTime createdAt;
   DateTime updatedAt;
-  int type;
+  BlaChannel type;
   Map<String, dynamic> customData;
   String lastMessageId;
   BlaMessage lastMessage;
+  String numberMessageUnread;
 
   BlaChannel.fromJson(Map<String, dynamic> data) {
     id = data["id"];
@@ -21,11 +22,11 @@ class BlaChannel {
     updatedAt = DateTime.parse(data["updatedAt"]);
     type = data["type"];
     customData = data["customData"];
-    print("custom data " + this.customData.toString());
     lastMessageId = data["lastMessageId"];
     if (data["lastMessage"] != null) {
       lastMessage = BlaMessage.fromJson(data["lastMessage"]);
     }
+    numberMessageUnread = data["numberMessageUnread"];
   }
 
   Map toJson() => {
@@ -38,5 +39,6 @@ class BlaChannel {
     "customData": customData,
     "lastMessageId": lastMessageId,
     "lastMessage": lastMessage.toJson(),
+    "numberMessageUnread": numberMessageUnread
   };
 }

@@ -169,7 +169,7 @@ class ChatContentState extends State<ChatContent> {
     try {
       _chatController.clear();
       var customData = Map<String, dynamic>();
-      customData["TestString"] = "test";
+      customData["TestString"] = "test android";
       customData["TestNumber"] = 1;
       var message = await BlaChatSdk.instance.createMessage(text, this.channelID, BlaMessageType.TEXT, customData);
       print("send message success " + message.toString());

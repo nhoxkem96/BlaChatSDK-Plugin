@@ -6,6 +6,7 @@ import 'package:bla_chat_sdk/BlaUser.dart';
 import 'package:bla_chat_sdk/EventType.dart';
 import 'CreateChannel.dart';
 import 'package:bla_chat_sdk/BlaChannelType.dart';
+import 'package:bla_chat_sdk/BlaMessageType.dart';
 
 class ChannelScreen extends StatefulWidget {
 
@@ -36,8 +37,11 @@ class ChannelScreenState extends State<ChannelScreen> {
 
   void addListener() async {
     await BlaChatSdk.instance.addChannelListener(new ChannelListener(
-      onTyping: (BlaChannel channel, BlaUser user, EventType type) {
+      onTyping: (BlaChannel channel, BlaUser user, EventType tyzpe) {
         print("onTyping in channel screen");
+      },
+      onUpdateChannel: (BlaChannel channel) {
+
       }
     ));
 
@@ -45,6 +49,11 @@ class ChannelScreenState extends State<ChannelScreen> {
         onNewMessage: (message) {
           print("have new message in channel screen: " + message.content);
         }
+    ));
+    await BlaChatSdk.instance.addPresenceListener(new PresenceListener(
+      onUpdate: (users) {
+        print("on update presence " + users.length.toString());
+      }
     ));
   }
 
@@ -58,7 +67,10 @@ class ChannelScreenState extends State<ChannelScreen> {
 
   void testFunction(BlaChannel channel) async {
     try {
-      var result = await BlaChatSdk.instance.updateChannel(channel);
+      Map<String, dynamic> customData = Map<String, dynamic>();
+      customData["test message"] = "haha";
+      customData["test number"] = 1;
+      var result = await BlaChatSdk.instance.createMessage("https://ubisoft-avatars.akamaized.net/bd295c9e-c874-4d57-8d82-92778543308b/default_146_146.png?appId=6ad16abe-8f32-406b-991b-450febe95823", channel.id, BlaMessageType.IMAGE, customData);
     } catch (e) {
       print("error test " + e.toString());
     }

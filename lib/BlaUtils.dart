@@ -18,6 +18,10 @@ class BlaUtils {
 
   static BlaChannelType initBlaChannelType(int value) {
     switch (value) {
+      case 1:
+        return BlaChannelType.GROUP;
+      case 2:
+        return BlaChannelType.DIRECT;
       default:
         return BlaChannelType.GROUP;
     }
@@ -25,6 +29,12 @@ class BlaUtils {
 
   static BlaMessageType initBlaMessageType(int value) {
     switch (value) {
+      case 0:
+        return BlaMessageType.TEXT;
+      case 1:
+        return BlaMessageType.IMAGE;
+      case 2:
+        return BlaMessageType.OTHER;
       default:
         return BlaMessageType.TEXT;
     }
@@ -54,8 +64,14 @@ class BlaUtils {
 
   static int getBlaMessageTypeRawValue(BlaMessageType type) {
     switch (type) {
-      default:
+      case BlaMessageType.TEXT:
+        return 0;
+      case BlaMessageType.IMAGE:
         return 1;
+      case BlaMessageType.OTHER:
+        return 2;
+      default:
+        return 0;
     }
   }
 }

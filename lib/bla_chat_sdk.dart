@@ -76,13 +76,13 @@ class BlaChatSdk {
         'token': token,
       });
       _channel.setMethodCallHandler((call) async {
+        print("method event " + call.method.toString());
         switch (call.method) {
           case "onNewMessage": {
-            print("run here onNewMessage " + call.toString());
+            print("mesage " + call.arguments["message"].toString());
             var message = BlaMessage.fromJson(json.decode(call.arguments["message"]));
             print("message lintener count " + messageListeners.length.toString());
             for (MessageListener listener in messageListeners) {
-              print("message lintener");
               listener.onNewMessage(message);
             }
             break;
@@ -120,7 +120,12 @@ class BlaChatSdk {
             break;
           }
           case "onUpdate": {
-
+            List<dynamic> result = json.decode(call.arguments["userPresence"]);
+            List<BlaUser> users =
+            result.map((item) => BlaUser.fromJson(item)).toList();
+            for (PresenceListener listener in presenceListeners) {
+              listener.onUpdate(users);
+            }
             break;
           }
           case "onNewChannel": {
@@ -333,7 +338,7 @@ class BlaChatSdk {
       String name, List<String> userIds, BlaChannelType type, Map<String, dynamic> customData) async {
     var customDataString = json.encode(customData);
     dynamic data = await _channel.invokeMethod(BlaConstants.CREATE_CHANNEL,
-        <String, dynamic>{'name': name, 'userIds': userIds.join(","), 'type': type, 'customData': customDataString});
+        <String, dynamic>{'name': name, 'userIds': userIds.join(","), 'type': BlaUtils.getChannelTypeRawValue(type), 'customData': customDataString});
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
     if (isSuccess) {

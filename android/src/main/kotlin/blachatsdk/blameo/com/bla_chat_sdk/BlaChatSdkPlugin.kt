@@ -11,6 +11,8 @@ import com.blameo.chatsdk.models.entities.User
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
+import com.google.protobuf.Parser
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -81,7 +83,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
       val token = arguments["token"] as String;
 
       if (userId != null && token != null) {
-        BlaChatSDK.getInstance().init(this.context, userId, token);
+        BlaChatSDK.getInstance().initBlaChatSDK(this.context, userId, token)
 
         BlaChatSDK.getInstance().addChannelListener(object: ChannelEventListener{
           override fun onMemberLeave(p0: BlaChannel?, p1: BlaUser?) {
@@ -178,7 +180,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
             this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
               override fun run() {
                 var dict = HashMap<String, Any>()
-                Log.i("test", "onNewMessage ")
+                Log.i("test", "onNewMessage " + myGson.toJson(p0))
                 dict["message"] = myGson.toJson(p0)
                 this@BlaChatSdkPlugin.channel!!.invokeMethod("onNewMessage", dict)
               }
@@ -229,16 +231,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
             })
           }
         })
-
         BlaChatSDK.getInstance().addPresenceListener(object: BlaPresenceListener{
-          override fun onUpdate(p0: BlaUserPresence?) {
+          override fun onUpdate(user: MutableList<BlaUser>?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
               override fun run() {
-//                var dict = HashMap<String, Any>()
-//                dict["channel"] = myGson.toJson(p0)
-//                dict["user"] = myGson.toJson(p1)
-//                dict["type"] = if(p2 == EventType.START) 1 else 0
-//                this@BlaChatSdkPlugin.channel!!.invokeMethod("onTyping", dict)
+                var dict = HashMap<String, Any>()
+                dict["channel"] = myGson.toJson(user)
+                this@BlaChatSdkPlugin.channel!!.invokeMethod("onTyping", dict)
               }
             })
           }
@@ -416,12 +415,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
         val name = arguments["name"] as String
         val userIds = arguments["userIds"] as String
         val type = arguments["type"] as Int
+        var customDataString = arguments["type"] as String
         var listUserId = userIds.split(",").toMutableList()  as ArrayList<String>
         var channelType = BlaChannelType.GROUP
         if (type == 2) {
           channelType = BlaChannelType.DIRECT
         }
-        BlaChatSDK.getInstance().createChannel(name, listUserId, channelType, object: Callback<BlaChannel> {
+        BlaChatSDK.getInstance().createChannel(name, listUserId, channelType, null, object: Callback<BlaChannel> {
           override fun onSuccess(p0: BlaChannel?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
               override fun run() {
@@ -681,8 +681,12 @@ class BlaChatSdkPlugin : MethodCallHandler {
         if (type == 1) {
           blaMessageType = BlaMessageType.IMAGE;
         }
+        val customDataString = arguments["customData"] as String
 
-        BlaChatSDK.getInstance().createMessage(content, channelId, blaMessageType, null, object: Callback<BlaMessage> {
+        var typeMap = object: TypeToken<Map<String, Object>>(){}.type
+        var customData: Map<String,Object> = myGson.fromJson(customDataString, typeMap);
+
+        BlaChatSDK.getInstance().createMessage(content, channelId, blaMessageType, customData, object: Callback<BlaMessage> {
           override fun onSuccess(p0: BlaMessage?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
               override fun run() {
