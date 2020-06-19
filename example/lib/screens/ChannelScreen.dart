@@ -41,7 +41,7 @@ class ChannelScreenState extends State<ChannelScreen> {
         print("onTyping in channel screen");
       },
       onUpdateChannel: (BlaChannel channel) {
-
+        print("on update channel ");
       }
     ));
 
