@@ -76,10 +76,8 @@ class BlaChatSdk {
         'token': token,
       });
       _channel.setMethodCallHandler((call) async {
-        print("method event " + call.method.toString());
         switch (call.method) {
           case "onNewMessage": {
-            print("mesage " + call.arguments["message"].toString());
             var message = BlaMessage.fromJson(json.decode(call.arguments["message"]));
             print("message lintener count " + messageListeners.length.toString());
             for (MessageListener listener in messageListeners) {

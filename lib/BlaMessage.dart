@@ -27,13 +27,18 @@ class BlaMessage {
     type = BlaUtils.initBlaMessageType(data["type"]);
     isSystemMessage = data["isSystemMessage"];
     customData = data["customData"];
-    createdAt = DateTime.parse(data["createdAt"]);
-    updatedAt = data["updatedAt"] != null ? DateTime.parse(data["updatedAt"]) : DateTime.parse(data["createdAt"]);
-    sentAt = DateTime.parse(data["sentAt"]);
+    if (data["createdAt"] != null) {
+      createdAt = DateTime.parse(data["createdAt"]);
+    }
+    if (data["updatedAt"] != null) {
+      updatedAt = data["updatedAt"] != null ? DateTime.parse(data["updatedAt"]) : DateTime.parse(data["createdAt"]);
+    }
+    if (data["sentAt"] != null) {
+      sentAt = DateTime.parse(data["sentAt"]);
+    }
     if (data["author"] != null) {
       author = BlaUser.fromJson(data["author"]);
     }
-
     if (data["receivedBy"] != null) {
       List<dynamic> listReceivedBy = data["receivedBy"];
       receivedBy = listReceivedBy.map((item) => BlaUser.fromJson(item)).toList();
@@ -59,7 +64,7 @@ class BlaMessage {
     "createdAt": createdAt.millisecondsSinceEpoch,
     "updatedAt": updatedAt.millisecondsSinceEpoch,
     "sentAt": sentAt.millisecondsSinceEpoch,
-    "author": author == null ? null : author.toJson(),
+    "author": author.toJson(),
     "receivedBy": jsonEncode(receivedBy.map((item) => item.toJson()).toList()),
     "seenBy": jsonEncode(seenBy.map((item) => item.toJson()).toList()),
   };
