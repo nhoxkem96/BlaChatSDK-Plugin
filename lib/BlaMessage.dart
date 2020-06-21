@@ -30,7 +30,10 @@ class BlaMessage {
     createdAt = DateTime.parse(data["createdAt"]);
     updatedAt = data["updatedAt"] != null ? DateTime.parse(data["updatedAt"]) : DateTime.parse(data["createdAt"]);
     sentAt = DateTime.parse(data["sentAt"]);
-    author = BlaUser.fromJson(data["author"]);
+    if (data["author"] != null) {
+      author = BlaUser.fromJson(data["author"]);
+    }
+
     if (data["receivedBy"] != null) {
       List<dynamic> listReceivedBy = data["receivedBy"];
       receivedBy = listReceivedBy.map((item) => BlaUser.fromJson(item)).toList();
@@ -56,7 +59,7 @@ class BlaMessage {
     "createdAt": createdAt.millisecondsSinceEpoch,
     "updatedAt": updatedAt.millisecondsSinceEpoch,
     "sentAt": sentAt.millisecondsSinceEpoch,
-    "author": author.toJson(),
+    "author": author == null ? null : author.toJson(),
     "receivedBy": jsonEncode(receivedBy.map((item) => item.toJson()).toList()),
     "seenBy": jsonEncode(seenBy.map((item) => item.toJson()).toList()),
   };

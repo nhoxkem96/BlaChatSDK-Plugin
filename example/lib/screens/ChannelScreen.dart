@@ -81,7 +81,8 @@ class ChannelScreenState extends State<ChannelScreen> {
       Map<String, dynamic> customData = Map<String, dynamic>();
       customData["test"] = "haha";
       customData["test number"] = 1;
-      var channel = await BlaChatSdk.instance.createChannel(name, ["e7cc8f40-30f7-41ab-a081-4a31ba6f1279"], BlaChannelType.GROUP, customData);
+
+      var channel = await BlaChatSdk.instance.createChannel(name, "https://ubisoft-avatars.akamaized.net/bd295c9e-c874-4d57-8d82-92778543308b/default_146_146.png?appId=6ad16abe-8f32-406b-991b-450febe95823",["e7cc8f40-30f7-41ab-a081-4a31ba6f1279"], BlaChannelType.GROUP, customData);
       Navigator.pop(context);
     } catch (e) {
       print("error create channel " + e);

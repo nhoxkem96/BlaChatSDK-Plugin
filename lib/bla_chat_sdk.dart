@@ -276,6 +276,7 @@ class BlaChatSdk {
         throw valueMap["message"];
       }
     } catch (e) {
+      print(e);
       throw e.toString();
     }
   }
@@ -335,10 +336,10 @@ class BlaChatSdk {
   }
 
   Future<BlaChannel> createChannel(
-      String name, List<String> userIds, BlaChannelType type, Map<String, dynamic> customData) async {
+      String name, String avatar, List<String> userIds, BlaChannelType type, Map<String, dynamic> customData) async {
     var customDataString = json.encode(customData);
     dynamic data = await _channel.invokeMethod(BlaConstants.CREATE_CHANNEL,
-        <String, dynamic>{'name': name, 'userIds': userIds.join(","), 'type': BlaUtils.getChannelTypeRawValue(type), 'customData': customDataString});
+        <String, dynamic>{'name': name, 'avatar': avatar, 'userIds': userIds.join(","), 'type': BlaUtils.getChannelTypeRawValue(type), 'customData': customDataString});
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
     if (isSuccess) {
@@ -389,7 +390,7 @@ class BlaChatSdk {
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
     if (isSuccess) {
-      return json.decode(valueMap["result"]);
+      return true;
     } else {
       throw valueMap["message"];
     }
@@ -403,36 +404,34 @@ class BlaChatSdk {
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
     if (isSuccess) {
-      return json.decode(valueMap["result"]);
+      return true;
     } else {
       throw valueMap["message"];
     }
   }
 
   Future<bool> markSeenMessage(
-      String messageId, String channelId, String receiveId) async {
+      String messageId, String channelId) async {
     dynamic data = await _channel.invokeMethod(
         BlaConstants.MARK_SEEN_MESSAGE, <String, dynamic>{
       'messageId': messageId,
-      'channelId': channelId,
-      'receiveId': receiveId
+      'channelId': channelId
     });
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
     if (isSuccess) {
-      return json.decode(valueMap["result"]);
+      return true;
     } else {
       throw valueMap["message"];
     }
   }
 
   Future<bool> markReceiveMessage(
-      String messageId, String channelId, String receiveId) async {
+      String messageId, String channelId) async {
     dynamic data = await _channel.invokeMethod(
         BlaConstants.MARK_RECEIVE_MESSAGE, <String, dynamic>{
       'messageId': messageId,
-      'channelId': channelId,
-      'receiveId': receiveId
+      'channelId': channelId
     });
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];

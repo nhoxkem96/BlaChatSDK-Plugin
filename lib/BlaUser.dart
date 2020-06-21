@@ -14,7 +14,9 @@ class BlaUser {
     avatar = data["avatar"];
     customData = data["customData"];
     online = data["online"];
-    lastActiveAt = DateTime.parse(data["lastActiveAt"]);
+    if (data["lastActiveAt"] != null) {
+      lastActiveAt = DateTime.parse(data["lastActiveAt"]);
+    }
   }
 
   Map toJson() => {

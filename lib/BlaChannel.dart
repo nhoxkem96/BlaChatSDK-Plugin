@@ -17,13 +17,20 @@ class BlaChannel {
   String numberMessageUnread;
 
   BlaChannel.fromJson(Map<String, dynamic> data) {
+    print(data);
     id = data["id"];
     name = data["name"];
     if (data["avatar"] != null) {
       avatar = data["avatar"];
     }
-    createdAt = DateTime.parse(data["createdAt"]);
-    updatedAt = DateTime.parse(data["updatedAt"]);
+    if ((data["createdAt"] as String).isNotEmpty){
+      createdAt = DateTime.parse(data["createdAt"]);
+    }
+
+    if ((data["updatedAt"] as String).isNotEmpty){
+      updatedAt = DateTime.parse(data["updatedAt"]);
+    }
+
     type = BlaUtils.initBlaChannelType(data["type"]);
     customData = data["customData"];
     lastMessageId = data["lastMessageId"];
