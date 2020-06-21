@@ -70,7 +70,8 @@ class ChannelScreenState extends State<ChannelScreen> {
       Map<String, dynamic> customData = Map<String, dynamic>();
       customData["test message"] = "haha";
       customData["test number"] = 1;
-      var result = await BlaChatSdk.instance.createMessage("https://ubisoft-avatars.akamaized.net/bd295c9e-c874-4d57-8d82-92778543308b/default_146_146.png?appId=6ad16abe-8f32-406b-991b-450febe95823", channel.id, BlaMessageType.IMAGE, customData);
+      var result = await BlaChatSdk.instance.createMessage("text", channel.id, BlaMessageType.TEXT, null);
+      print("call back " + result.toString());
     } catch (e) {
       print("error test " + e.toString());
     }
@@ -81,7 +82,7 @@ class ChannelScreenState extends State<ChannelScreen> {
       Map<String, dynamic> customData = Map<String, dynamic>();
       customData["test"] = "haha";
       customData["test number"] = 1;
-      var channel = await BlaChatSdk.instance.createChannel(name, ["e7cc8f40-30f7-41ab-a081-4a31ba6f1279"], BlaChannelType.GROUP, customData);
+      var channel = await BlaChatSdk.instance.createChannel(name, "", ["e7cc8f40-30f7-41ab-a081-4a31ba6f1279"], BlaChannelType.GROUP, customData);
       Navigator.pop(context);
     } catch (e) {
       print("error create channel " + e);
@@ -128,7 +129,7 @@ class ChannelScreenState extends State<ChannelScreen> {
                         children: <Widget>[
                           CircleAvatar(
                             radius: 28,
-                            backgroundImage: NetworkImage(_channels[index].avatar.isEmpty ? "http://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png" : _channels[index].avatar)
+                            backgroundImage: NetworkImage(_channels[index].avatar == null ? "http://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png" : _channels[index].avatar)
                           ),
                           new Container(
                             margin: EdgeInsets.only(left: 8, top: 8, bottom: 8),
@@ -136,7 +137,7 @@ class ChannelScreenState extends State<ChannelScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 new Text(
-                                  _channels[index].name,
+                                  _channels[index].name != null ? _channels[index].name : '',
                                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                 ),
                                 new Container(

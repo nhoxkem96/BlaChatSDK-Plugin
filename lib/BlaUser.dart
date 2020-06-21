@@ -11,10 +11,18 @@ class BlaUser {
   BlaUser.fromJson(Map<String, dynamic> data) {
     id = data["id"];
     name = data["name"];
-    avatar = data["avatar"];
-    customData = data["customData"];
-    online = data["online"];
-    lastActiveAt = DateTime.parse(data["lastActiveAt"]);
+    if (data["avatar"] != null) {
+      avatar = data["avatar"];
+    }
+    if (data["customData"] != null) {
+      customData = data["customData"];
+    }
+    if (data["online"] != null) {
+      online = data["online"];
+    }
+    if (data["lastActiveAt"] != null) {
+      lastActiveAt = DateTime.parse(data["lastActiveAt"]);
+    }
   }
 
   Map toJson() => {

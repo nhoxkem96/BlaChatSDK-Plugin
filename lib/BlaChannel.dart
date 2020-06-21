@@ -22,11 +22,17 @@ class BlaChannel {
     if (data["avatar"] != null) {
       avatar = data["avatar"];
     }
-    createdAt = DateTime.parse(data["createdAt"]);
-    updatedAt = DateTime.parse(data["updatedAt"]);
+    if (data["createdAt"] != null) {
+      createdAt = DateTime.parse(data["createdAt"]);
+    }
+    if (data["updatedAt"] != null) {
+      updatedAt = DateTime.parse(data["updatedAt"]);
+    }
     type = BlaUtils.initBlaChannelType(data["type"]);
     customData = data["customData"];
-    lastMessageId = data["lastMessageId"];
+    if (lastMessageId != null) {
+      lastMessageId = data["lastMessageId"];
+    }
     if (data["lastMessage"] != null) {
       lastMessage = BlaMessage.fromJson(data["lastMessage"]);
     }

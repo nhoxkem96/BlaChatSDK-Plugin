@@ -76,10 +76,8 @@ class BlaChatSdk {
         'token': token,
       });
       _channel.setMethodCallHandler((call) async {
-        print("method event " + call.method.toString());
         switch (call.method) {
           case "onNewMessage": {
-            print("mesage " + call.arguments["message"].toString());
             var message = BlaMessage.fromJson(json.decode(call.arguments["message"]));
             print("message lintener count " + messageListeners.length.toString());
             for (MessageListener listener in messageListeners) {
@@ -335,7 +333,7 @@ class BlaChatSdk {
   }
 
   Future<BlaChannel> createChannel(
-      String name, List<String> userIds, BlaChannelType type, Map<String, dynamic> customData) async {
+      String name, String avatar, List<String> userIds, BlaChannelType type, Map<String, dynamic> customData) async {
     var customDataString = json.encode(customData);
     dynamic data = await _channel.invokeMethod(BlaConstants.CREATE_CHANNEL,
         <String, dynamic>{'name': name, 'userIds': userIds.join(","), 'type': BlaUtils.getChannelTypeRawValue(type), 'customData': customDataString});
@@ -410,12 +408,11 @@ class BlaChatSdk {
   }
 
   Future<bool> markSeenMessage(
-      String messageId, String channelId, String receiveId) async {
+      String messageId, String channelId) async {
     dynamic data = await _channel.invokeMethod(
         BlaConstants.MARK_SEEN_MESSAGE, <String, dynamic>{
       'messageId': messageId,
-      'channelId': channelId,
-      'receiveId': receiveId
+      'channelId': channelId
     });
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
@@ -427,12 +424,11 @@ class BlaChatSdk {
   }
 
   Future<bool> markReceiveMessage(
-      String messageId, String channelId, String receiveId) async {
+      String messageId, String channelId) async {
     dynamic data = await _channel.invokeMethod(
         BlaConstants.MARK_RECEIVE_MESSAGE, <String, dynamic>{
       'messageId': messageId,
-      'channelId': channelId,
-      'receiveId': receiveId
+      'channelId': channelId
     });
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
