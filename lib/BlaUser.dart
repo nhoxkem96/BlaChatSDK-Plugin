@@ -31,6 +31,6 @@ class BlaUser {
     "avatar": avatar,
     "customData": customData,
     "online": online,
-    "lastActiveAt": lastActiveAt
+    "lastActiveAt": lastActiveAt != null ? lastActiveAt.millisecondsSinceEpoch : 0
   };
 }

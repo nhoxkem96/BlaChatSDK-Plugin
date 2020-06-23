@@ -223,7 +223,7 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
                 let userIds = arguments["userIds"] as? String,
                 let type = arguments["type"] as? Int
             {
-                var channelType = BlaChannelType.init(rawValue: type)
+                let channelType = BlaChannelType.init(rawValue: type)
                 let listUserId = userIds.components(separatedBy: ",")
                 var customData: [String: Any]?
                 if let customDataString = arguments["customData"] as? String, let data = customDataString.data(using: .utf8) {
@@ -262,7 +262,7 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
             if let jsonChannel = arguments["channel"] as? String
             {
                 let json = JSON.init(parseJSON: jsonChannel)
-                let channel = BlaChannel(dao: BlaChannelDAO(json: json))
+                let channel = BlaChannel(json: json)
                 ChatSDK.shareInstance.updateChannel(channel: channel) { (channelResult, error) in
                     if let err = error {
                         let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
@@ -294,7 +294,7 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
             if let jsonChannel = arguments["channel"] as? String
             {
                 let json = JSON.init(parseJSON: jsonChannel)
-                let channel = BlaChannel(dao: BlaChannelDAO(json: json))
+                let channel = BlaChannel(json: json)
                 ChatSDK.shareInstance.deleteChannel(channel: channel) { (channelResult, error) in
                     if let err = error {
                         let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
@@ -458,7 +458,7 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
             if let jsonMessage = arguments["message"] as? String
             {
                 let json = JSON.init(parseJSON: jsonMessage)
-                let message = BlaMessage(dao: BlaMessageDAO(json: json))
+                let message = BlaMessage(json: json)
                 ChatSDK.shareInstance.updateMessage(message: message) { (messageResult, error) in
                     if let err = error {
                         let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
@@ -489,7 +489,7 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
             if let jsonMessage = arguments["message"] as? String
             {
                 let json = JSON.init(parseJSON: jsonMessage)
-                let message = BlaMessage(dao: BlaMessageDAO(json: json))
+                let message = BlaMessage(json: json)
                 ChatSDK.shareInstance.deleteMessage(message: message) { (messageResult, error) in
                     if let err = error {
                         let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
@@ -630,17 +630,14 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
         ]);
     }
     
-    public func onDeleteChannel(channel: BlaChannel) {
+    public func onDeleteChannel(channelId: String) {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         let jsonEncoder = JSONEncoder()
         jsonEncoder.dateEncodingStrategy = .formatted(formatter)
         
-        let jsonData1 = try! jsonEncoder.encode(channel)
-        let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
-        
         self._channel.invokeMethod("onDeleteChannel", arguments: [
-            "channel": jsonResult1!,
+            "channelId": channelId,
         ]);
     }
     
@@ -727,17 +724,14 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
         ]);
     }
     
-    public func onDeleteMessage(message: BlaMessage) {
+    public func onDeleteMessage(messageId: String) {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         let jsonEncoder = JSONEncoder()
         jsonEncoder.dateEncodingStrategy = .formatted(formatter)
         
-        let jsonData1 = try! jsonEncoder.encode(message)
-        let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
-        
         self._channel.invokeMethod("onDeleteMessage", arguments: [
-            "message": jsonResult1!,
+            "messageId": messageId,
         ]);
     }
     

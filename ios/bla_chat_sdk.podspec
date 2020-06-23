@@ -15,7 +15,7 @@ A new Flutter plugin.
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
-  s.dependency 'BlaChatSDK', '~> 0.0.14'
+  s.dependency 'BlaChatSDK', '~> 0.0.16'
 
   s.ios.deployment_target = '10.0'
 end

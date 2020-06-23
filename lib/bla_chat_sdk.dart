@@ -16,7 +16,7 @@ class MessageListener {
 
   Function(BlaMessage message) onNewMessage;
   Function(BlaMessage message) onUpdateMessage;
-  Function(BlaMessage message) onDeleteMessage;
+  Function(String messageId) onDeleteMessage;
   Function(BlaMessage message, BlaUser user, DateTime seenAt) onUserSeen;
   Function(BlaMessage message, BlaUser user, DateTime receivedAt) onUserReceive;
 }
@@ -35,7 +35,7 @@ class ChannelListener {
 
   Function(BlaChannel channel) onNewChannel;
   Function(BlaChannel channel) onUpdateChannel;
-  Function(BlaChannel channel) onDeleteChannel;
+  Function(String channelId) onDeleteChannel;
   Function(BlaChannel channel, BlaUser user, BlaMessage message) onUserSeenMessage;
   Function(BlaChannel channel, BlaUser user, BlaMessage message) onUserReceiveMessage;
   Function(BlaChannel channel, BlaUser user, EventType eventType) onTyping;
@@ -76,10 +76,10 @@ class BlaChatSdk {
         'token': token,
       });
       _channel.setMethodCallHandler((call) async {
+        print("call method " + call.method);
         switch (call.method) {
           case "onNewMessage": {
             var message = BlaMessage.fromJson(json.decode(call.arguments["message"]));
-            print("message lintener count " + messageListeners.length.toString());
             for (MessageListener listener in messageListeners) {
               listener.onNewMessage(message);
             }
@@ -93,9 +93,9 @@ class BlaChatSdk {
             break;
           }
           case "onDeleteMessage": {
-            var message = BlaMessage.fromJson(json.decode(call.arguments["message"]));
+            var messageId = call.arguments["messageId"];
             for (MessageListener listener in messageListeners) {
-              listener.onDeleteMessage(message);
+              listener.onDeleteMessage(messageId);
             }
             break;
           }
@@ -141,9 +141,9 @@ class BlaChatSdk {
             break;
           }
           case "onDeleteChannel": {
-            var channel = BlaChannel.fromJson(json.decode(call.arguments["channel"]));
+            var channelId = call.arguments["channelId"];
             for (ChannelListener listener in channelListeners) {
-              listener.onDeleteChannel(channel);
+              listener.onDeleteChannel(channelId);
             }
             break;
           }
@@ -356,7 +356,7 @@ class BlaChatSdk {
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
     if (isSuccess) {
-      var channel = BlaChannel.fromJson(valueMap["result"]);
+      var channel = BlaChannel.fromJson(json.decode(valueMap["result"]));
       return channel;
     } else {
       throw valueMap["message"];
@@ -372,7 +372,7 @@ class BlaChatSdk {
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
     if (isSuccess) {
-      var channel = BlaChannel.fromJson(valueMap["result"]);
+      var channel = BlaChannel.fromJson(json.decode(valueMap["result"]));
       return channel;
     } else {
       throw valueMap["message"];
@@ -386,8 +386,9 @@ class BlaChatSdk {
     });
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
+    bool result = valueMap["result"];
     if (isSuccess) {
-      return json.decode(valueMap["result"]);
+      return result;
     } else {
       throw valueMap["message"];
     }
@@ -400,8 +401,9 @@ class BlaChatSdk {
     });
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
+    bool result = valueMap["result"];
     if (isSuccess) {
-      return json.decode(valueMap["result"]);
+      return result;
     } else {
       throw valueMap["message"];
     }
@@ -416,8 +418,9 @@ class BlaChatSdk {
     });
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
+    bool result = valueMap["result"];
     if (isSuccess) {
-      return json.decode(valueMap["result"]);
+      return result;
     } else {
       throw valueMap["message"];
     }
@@ -432,8 +435,9 @@ class BlaChatSdk {
     });
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
+    bool result = valueMap["result"];
     if (isSuccess) {
-      return json.decode(valueMap["result"]);
+      return result;
     } else {
       throw valueMap["message"];
     }
@@ -460,7 +464,7 @@ class BlaChatSdk {
   }
 
   Future<BlaMessage> updateMessage(BlaMessage message) async {
-    var jsonMessage = message.toJson();
+    var jsonMessage = jsonEncode(message.toJson());
     dynamic data = await _channel
         .invokeMethod(BlaConstants.UPDATE_MESSAGE, <String, dynamic>{
       'message': jsonMessage
@@ -476,11 +480,13 @@ class BlaChatSdk {
   }
 
   Future<BlaMessage> deleteMessage(BlaMessage message) async {
-    var jsonMessage = message.toJson();
+    var jsonMessage = jsonEncode(message.toJson());
+    print("json message " + jsonMessage.toString());
     dynamic data = await _channel
         .invokeMethod(BlaConstants.DELETE_MESSAGE, <String, dynamic>{
       'message': jsonMessage
     });
+    print("data response " + data.toString());
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
     if (isSuccess) {
@@ -498,8 +504,9 @@ class BlaChatSdk {
         <String, dynamic>{'userIds': userIds.join(","), 'channelId': channelId});
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
+    bool result = valueMap["result"];
     if (isSuccess) {
-      return true;
+      return result;
     } else {
       throw valueMap["message"];
     }
@@ -511,8 +518,9 @@ class BlaChatSdk {
         <String, dynamic>{'userId': userId, 'channelId': channelId});
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
+    bool result = valueMap["result"];
     if (isSuccess) {
-      return true;
+      return result;
     } else {
       throw valueMap["message"];
     }

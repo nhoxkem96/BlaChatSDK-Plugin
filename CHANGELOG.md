@@ -32,3 +32,10 @@ TODO: Fix bug
 
 ## 0.0.11
 TODO: Fix bug
+
+
+## 0.0.12
+TODO: Fix bug
+
+## 0.0.13
+TODO: Fix bug

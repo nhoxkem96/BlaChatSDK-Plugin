@@ -42,12 +42,18 @@ class ChannelScreenState extends State<ChannelScreen> {
       },
       onUpdateChannel: (BlaChannel channel) {
         print("on update channel ");
+      },
+      onDeleteChannel: (String channelId) {
+        print("delete channel");
       }
     ));
 
     await BlaChatSdk.instance.addMessageListener(new MessageListener(
         onNewMessage: (message) {
           print("have new message in channel screen: " + message.content);
+        },
+        onDeleteMessage: (messageId) {
+          print('delete message id');
         }
     ));
     await BlaChatSdk.instance.addPresenceListener(new PresenceListener(
@@ -70,8 +76,10 @@ class ChannelScreenState extends State<ChannelScreen> {
       Map<String, dynamic> customData = Map<String, dynamic>();
       customData["test message"] = "haha";
       customData["test number"] = 1;
-      var result = await BlaChatSdk.instance.createMessage("text", channel.id, BlaMessageType.TEXT, null);
-      print("call back " + result.toString());
+//      var result = await BlaChatSdk.instance.createMessage("text", channel.id, BlaMessageType.TEXT, null);
+//      print("call back " + result.toString());
+       var test = await BlaChatSdk.instance.deleteMessage(channel.lastMessage);
+       print("haha " + test.toString());
     } catch (e) {
       print("error test " + e.toString());
     }

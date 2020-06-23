@@ -43,12 +43,12 @@ class BlaChannel {
     "id": id,
     "name": name,
     "avatar": avatar,
-    "createdAt": createdAt.millisecondsSinceEpoch,
-    "updatedAt": updatedAt.millisecondsSinceEpoch,
-    "type": type,
+    "createdAt": createdAt != null ? createdAt.millisecondsSinceEpoch : 0,
+    "updatedAt": updatedAt != null ? updatedAt.millisecondsSinceEpoch : 0,
+    "type": BlaUtils.getChannelTypeRawValue(type),
     "customData": customData,
-    "lastMessageId": lastMessageId,
-    "lastMessage": lastMessage.toJson(),
+    "lastMessageId": lastMessageId != null ? lastMessageId : "",
+    "lastMessage": lastMessage != null ? lastMessage.toJson() : null,
     "numberMessageUnread": numberMessageUnread
   };
 }
