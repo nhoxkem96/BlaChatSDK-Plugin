@@ -76,7 +76,6 @@ class BlaChatSdk {
         'token': token,
       });
       _channel.setMethodCallHandler((call) async {
-        print("call method " + call.method);
         switch (call.method) {
           case "onNewMessage": {
             var message = BlaMessage.fromJson(json.decode(call.arguments["message"]));
@@ -336,7 +335,7 @@ class BlaChatSdk {
       String name, String avatar, List<String> userIds, BlaChannelType type, Map<String, dynamic> customData) async {
     var customDataString = json.encode(customData);
     dynamic data = await _channel.invokeMethod(BlaConstants.CREATE_CHANNEL,
-        <String, dynamic>{'name': name, 'userIds': userIds.join(","), 'type': BlaUtils.getChannelTypeRawValue(type), 'customData': customDataString});
+        <String, dynamic>{'name': name, 'avatar': avatar, 'userIds': userIds.join(","), 'type': BlaUtils.getChannelTypeRawValue(type), 'customData': customDataString});
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
     if (isSuccess) {
@@ -481,12 +480,10 @@ class BlaChatSdk {
 
   Future<BlaMessage> deleteMessage(BlaMessage message) async {
     var jsonMessage = jsonEncode(message.toJson());
-    print("json message " + jsonMessage.toString());
     dynamic data = await _channel
         .invokeMethod(BlaConstants.DELETE_MESSAGE, <String, dynamic>{
       'message': jsonMessage
     });
-    print("data response " + data.toString());
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
     if (isSuccess) {
