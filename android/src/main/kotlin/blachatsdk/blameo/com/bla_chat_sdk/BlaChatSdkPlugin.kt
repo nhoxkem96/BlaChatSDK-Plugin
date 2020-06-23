@@ -59,7 +59,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
     @JvmStatic
     fun registerWith(registrar: Registrar) {
       val channel = MethodChannel(registrar.messenger(), "bla_chat_sdk")
-      val bien = BlaChatSdkPlugin();
+      val bien = BlaChatSdkPlugin()
       bien.setupChannel(registrar.messenger(), registrar.activity(), channel)
       channel.setMethodCallHandler(bien)
     }
