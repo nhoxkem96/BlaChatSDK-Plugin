@@ -47,6 +47,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
   private val INVITE_USER_TO_CHANNEL = "inviteUserToChannel"
   private val REMOVE_USER_FROM_CHANNEL = "removeUserFromChannel"
   private val GET_USER_PRESENCE = "getUserPresence"
+  private val SEARCH_CHANNELS = "searchChannels"
 
 
   var thread: Thread? = null
@@ -71,15 +72,24 @@ class BlaChatSdkPlugin : MethodCallHandler {
   }
 
   override fun onMethodCall(call: MethodCall, result: Result) {
-    val arguments = call.arguments as Map<String, Any>;
+    val arguments = call.arguments as Map<*, *>;
     if (call.method == "getPlatformVersion") {
       result.success("Android ${android.os.Build.VERSION.RELEASE}")
     } else if (call.method == INIT_BLACHATSDK) {
       val sharedPreferences = context?.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-      val userId = arguments["userId"] as String;
-      val token = arguments["token"] as String;
 
-      BlaChatSDK.getInstance().initBlaChatSDK(this.context, userId, token)
+      try {
+        if (arguments["userId"] == null || arguments["token"] == null) {
+          result.error("INIT", "arguments must not be null", "userid or token is null")
+          return
+        }
+        val userId = arguments["userId"] as String;
+        val token = arguments["token"] as String;
+        BlaChatSDK.getInstance().initBlaChatSDK(this.context, userId, token)
+      } catch (e: Exception) {
+        result.error("INIT", e.message, e)
+      }
+
 
       BlaChatSDK.getInstance().addChannelListener(object: ChannelEventListener{
         override fun onMemberLeave(p0: BlaChannel?, p1: BlaUser?) {
@@ -774,6 +784,32 @@ class BlaChatSdkPlugin : MethodCallHandler {
       }
     } else if (call.method == GET_USER_PRESENCE) {
 
+    } else if (call.method == SEARCH_CHANNELS) {
+      try {
+        val q = arguments["q"] as String
+        BlaChatSDK.getInstance().searchChannels(q, object: Callback<List<BlaChannel>> {
+          override fun onSuccess(rs: List<BlaChannel>?) {
+            this@BlaChatSdkPlugin.context?.runOnUiThread {
+              val dict = HashMap<String, Any>()
+              dict["isSuccess"] = true
+              dict["result"] = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create().toJson(rs)
+              val jsonString = Gson().toJson(dict)
+              result.success(jsonString)
+            }
+          }
+
+          override fun onFail(e: Exception?) {
+            val dict = HashMap<String, Any>()
+            dict["isSuccess"] = false
+            dict["message"] = e.toString()
+            val jsonString = Gson().toJson(dict);
+            result.success(jsonString)
+          }
+
+        })
+      } catch (e: Exception) {
+        result.error("EXCEPTION", e.message, e)
+      }
     } else {
       result.notImplemented()
     }

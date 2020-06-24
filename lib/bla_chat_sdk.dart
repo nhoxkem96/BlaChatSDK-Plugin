@@ -200,7 +200,6 @@ class BlaChatSdk {
   }
 
 
-
   Future<bool> addMessageListener(MessageListener listener) async {
     try {
       messageListeners.add(listener);
@@ -530,6 +529,21 @@ class BlaChatSdk {
     bool isSuccess = valueMap["isSuccess"];
     if (isSuccess) {
       return [];
+    } else {
+      throw valueMap["message"];
+    }
+  }
+
+  Future<List<BlaChannel>> searchChannels(String q) async {
+    dynamic data = await _channel
+        .invokeMethod(BlaConstants.SEARCH_CHANNELS, <String, dynamic>{});
+    Map valueMap = json.decode(data);
+    bool isSuccess = valueMap["isSuccess"];
+    if (isSuccess) {
+      List<dynamic> result = json.decode(valueMap["result"]);
+      List<BlaChannel> channels =
+      result.map((item) => BlaChannel.fromJson(item)).toList();
+      return channels;
     } else {
       throw valueMap["message"];
     }

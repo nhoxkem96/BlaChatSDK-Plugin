@@ -26,6 +26,7 @@ class BlaConstants {
   static String INVITE_USER_TO_CHANNEL = "inviteUserToChannel";
   static String REMOVE_USER_FROM_CHANNEL = "removeUserFromChannel";
   static String GET_USER_PRESENCE = "getUserPresence";
+  static String SEARCH_CHANNELS = "searchChannels";
 
   //Listener
 
