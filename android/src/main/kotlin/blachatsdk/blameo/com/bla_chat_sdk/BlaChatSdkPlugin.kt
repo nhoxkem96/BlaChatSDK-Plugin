@@ -320,7 +320,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
               override fun run() {
                 val dict = HashMap<String, Any>()
                 dict["isSuccess"] = true
-                dict["result"] = myGson.create().toJson(p0)
+                dict["result"] = myGson.toJson(p0)
                 val jsonString = myGson.toJson(dict)
                 result.success(jsonString)
               }
