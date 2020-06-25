@@ -298,288 +298,360 @@ class BlaChatSdk {
   }
 
   Future<List<BlaUser>> getUsersInChannel(String channelId) async {
-    dynamic data = await _channel
-        .invokeMethod(BlaConstants.GET_USERS_IN_CHANNEL, <String, dynamic>{
-      'channelId': channelId,
-    });
-    Map valueMap = json.decode(data);
-    bool isSuccess = valueMap["isSuccess"];
-    if (isSuccess) {
-      List<dynamic> result = json.decode(valueMap["result"]);
-      List<BlaUser> users =
-          result.map((item) => BlaUser.fromJson(item)).toList();
-      return users;
-    } else {
-      throw valueMap["message"];
+    try {
+      dynamic data = await _channel
+          .invokeMethod(BlaConstants.GET_USERS_IN_CHANNEL, <String, dynamic>{
+        'channelId': channelId,
+      });
+      Map valueMap = json.decode(data);
+      bool isSuccess = valueMap["isSuccess"];
+      if (isSuccess) {
+        List<dynamic> result = json.decode(valueMap["result"]);
+        List<BlaUser> users =
+        result.map((item) => BlaUser.fromJson(item)).toList();
+        return users;
+      } else {
+        throw valueMap["message"];
+      }
+    } catch (e) {
+      throw e.toString();
     }
   }
 
   Future<List<BlaUser>> getUsers(List<String> userIds) async {
-    dynamic data =
-        await _channel.invokeMethod(BlaConstants.GET_USERS, <String, dynamic>{
-      'userIds': userIds.join(","),
-    });
-    Map valueMap = json.decode(data);
-    bool isSuccess = valueMap["isSuccess"];
-    if (isSuccess) {
-      List<dynamic> result = json.decode(valueMap["result"]);
-      List<BlaUser> users =
-          result.map((item) => BlaUser.fromJson(item)).toList();
-      return users;
-    } else {
-      throw valueMap["message"];
+    try {
+      dynamic data =
+      await _channel.invokeMethod(BlaConstants.GET_USERS, <String, dynamic>{
+        'userIds': userIds.join(","),
+      });
+      Map valueMap = json.decode(data);
+      bool isSuccess = valueMap["isSuccess"];
+      if (isSuccess) {
+        List<dynamic> result = json.decode(valueMap["result"]);
+        List<BlaUser> users =
+        result.map((item) => BlaUser.fromJson(item)).toList();
+        return users;
+      } else {
+        throw valueMap["message"];
+      }
+    } catch (e) {
+      throw e.toString();
     }
   }
 
   Future<List<BlaMessage>> getMessages(
       String channelId, String lastId, int limit) async {
-    dynamic data = await _channel.invokeMethod(
-        BlaConstants.GET_MESSAGES, <String, dynamic>{
-      'channelId': channelId,
-      'lastId': lastId,
-      'limit': limit
-    });
-    Map valueMap = json.decode(data);
-    bool isSuccess = valueMap["isSuccess"];
-    if (isSuccess) {
-      List<dynamic> result = json.decode(valueMap["result"]);
-      List<BlaMessage> messages =
-          result.map((item) => BlaMessage.fromJson(item)).toList();
-      return messages;
-    } else {
-      throw valueMap["message"];
+    try {
+      dynamic data = await _channel.invokeMethod(
+          BlaConstants.GET_MESSAGES, <String, dynamic>{
+        'channelId': channelId,
+        'lastId': lastId,
+        'limit': limit
+      });
+      Map valueMap = json.decode(data);
+      bool isSuccess = valueMap["isSuccess"];
+      if (isSuccess) {
+        List<dynamic> result = json.decode(valueMap["result"]);
+        List<BlaMessage> messages =
+        result.map((item) => BlaMessage.fromJson(item)).toList();
+        return messages;
+      } else {
+        throw valueMap["message"];
+      }
+    } catch (e) {
+      throw e.toString();
     }
   }
 
   Future<BlaChannel> createChannel(
       String name, String avatar, List<String> userIds, BlaChannelType type, Map<String, dynamic> customData) async {
-    var customDataString = json.encode(customData);
-    dynamic data = await _channel.invokeMethod(BlaConstants.CREATE_CHANNEL,
-        <String, dynamic>{'name': name, 'avatar': avatar, 'userIds': userIds.join(","), 'type': BlaUtils.getChannelTypeRawValue(type), 'customData': customDataString});
-    Map valueMap = json.decode(data);
-    bool isSuccess = valueMap["isSuccess"];
-    if (isSuccess) {
-      var channel = BlaChannel.fromJson(json.decode(valueMap["result"]));
-      return channel;
-    } else {
-      throw valueMap["message"];
+    try {
+      var customDataString = json.encode(customData);
+      dynamic data = await _channel.invokeMethod(BlaConstants.CREATE_CHANNEL,
+          <String, dynamic>{'name': name, 'avatar': avatar, 'userIds': userIds.join(","), 'type': BlaUtils.getChannelTypeRawValue(type), 'customData': customDataString});
+      Map valueMap = json.decode(data);
+      bool isSuccess = valueMap["isSuccess"];
+      if (isSuccess) {
+        var channel = BlaChannel.fromJson(json.decode(valueMap["result"]));
+        return channel;
+      } else {
+        throw valueMap["message"];
+      }
+    } catch (e) {
+      throw e.toString();
     }
   }
 
   Future<BlaChannel> updateChannel(BlaChannel channel) async {
-    var jsonChannel = jsonEncode(channel.toJson());
-    dynamic data = await _channel
-        .invokeMethod(BlaConstants.UPDATE_CHANNEL, <String, dynamic>{
-      'channel': jsonChannel
-    });
-    Map valueMap = json.decode(data);
-    bool isSuccess = valueMap["isSuccess"];
-    if (isSuccess) {
-      var channel = BlaChannel.fromJson(json.decode(valueMap["result"]));
-      return channel;
-    } else {
-      throw valueMap["message"];
+    try {
+      var jsonChannel = jsonEncode(channel.toJson());
+      dynamic data = await _channel
+          .invokeMethod(BlaConstants.UPDATE_CHANNEL, <String, dynamic>{
+        'channel': jsonChannel
+      });
+      Map valueMap = json.decode(data);
+      bool isSuccess = valueMap["isSuccess"];
+      if (isSuccess) {
+        var channel = BlaChannel.fromJson(json.decode(valueMap["result"]));
+        return channel;
+      } else {
+        throw valueMap["message"];
+      }
+    } catch (e) {
+      throw e.toString();
     }
   }
 
   Future<BlaChannel> deleteChannel(BlaChannel channel) async {
-    var jsonChannel = jsonEncode(channel.toJson());
-    dynamic data = await _channel.invokeMethod(BlaConstants.DELETE_CHANNEL,
-        <String, dynamic>{
-          'channel': jsonChannel
-        });
-    Map valueMap = json.decode(data);
-    bool isSuccess = valueMap["isSuccess"];
-    if (isSuccess) {
-      var channel = BlaChannel.fromJson(json.decode(valueMap["result"]));
-      return channel;
-    } else {
-      throw valueMap["message"];
+    try {
+      var jsonChannel = jsonEncode(channel.toJson());
+      dynamic data = await _channel.invokeMethod(BlaConstants.DELETE_CHANNEL,
+          <String, dynamic>{
+            'channel': jsonChannel
+          });
+      Map valueMap = json.decode(data);
+      bool isSuccess = valueMap["isSuccess"];
+      if (isSuccess) {
+        var channel = BlaChannel.fromJson(json.decode(valueMap["result"]));
+        return channel;
+      } else {
+        throw valueMap["message"];
+      }
+    } catch (e) {
+      throw e.toString();
     }
   }
 
   Future<bool> sendStartTyping(String channelId) async {
-    dynamic data = await _channel
-        .invokeMethod(BlaConstants.SEND_START_TYPING, <String, dynamic>{
-      'channelId': channelId,
-    });
-    Map valueMap = json.decode(data);
-    bool isSuccess = valueMap["isSuccess"];
-    bool result = valueMap["result"];
-    if (isSuccess) {
-      return result;
-    } else {
-      throw valueMap["message"];
+    try {
+      dynamic data = await _channel
+          .invokeMethod(BlaConstants.SEND_START_TYPING, <String, dynamic>{
+        'channelId': channelId,
+      });
+      Map valueMap = json.decode(data);
+      bool isSuccess = valueMap["isSuccess"];
+      bool result = valueMap["result"];
+      if (isSuccess) {
+        return result;
+      } else {
+        throw valueMap["message"];
+      }
+    } catch (e) {
+      throw e.toString();
     }
   }
 
   Future<bool> sendStopTyping(String channelId) async {
-    dynamic data = await _channel
-        .invokeMethod(BlaConstants.SEND_STOP_TYPING, <String, dynamic>{
-      'channelId': channelId,
-    });
-    Map valueMap = json.decode(data);
-    bool isSuccess = valueMap["isSuccess"];
-    bool result = valueMap["result"];
-    if (isSuccess) {
-      return result;
-    } else {
-      throw valueMap["message"];
+    try {
+      dynamic data = await _channel
+          .invokeMethod(BlaConstants.SEND_STOP_TYPING, <String, dynamic>{
+        'channelId': channelId,
+      });
+      Map valueMap = json.decode(data);
+      bool isSuccess = valueMap["isSuccess"];
+      bool result = valueMap["result"];
+      if (isSuccess) {
+        return result;
+      } else {
+        throw valueMap["message"];
+      }
+    } catch (e) {
+      throw e.toString();
     }
   }
 
   Future<bool> markSeenMessage(
       String messageId, String channelId) async {
-    dynamic data = await _channel.invokeMethod(
-        BlaConstants.MARK_SEEN_MESSAGE, <String, dynamic>{
-      'messageId': messageId,
-      'channelId': channelId
-    });
-    Map valueMap = json.decode(data);
-    bool isSuccess = valueMap["isSuccess"];
-    bool result = valueMap["result"];
-    if (isSuccess) {
-      return result;
-    } else {
-      throw valueMap["message"];
+    try {
+      dynamic data = await _channel.invokeMethod(
+          BlaConstants.MARK_SEEN_MESSAGE, <String, dynamic>{
+        'messageId': messageId,
+        'channelId': channelId
+      });
+      Map valueMap = json.decode(data);
+      bool isSuccess = valueMap["isSuccess"];
+      bool result = valueMap["result"];
+      if (isSuccess) {
+        return result;
+      } else {
+        throw valueMap["message"];
+      }
+    } catch (e) {
+      throw e.toString();
     }
   }
 
   Future<bool> markReceiveMessage(
       String messageId, String channelId) async {
-    dynamic data = await _channel.invokeMethod(
-        BlaConstants.MARK_RECEIVE_MESSAGE, <String, dynamic>{
-      'messageId': messageId,
-      'channelId': channelId
-    });
-    Map valueMap = json.decode(data);
-    bool isSuccess = valueMap["isSuccess"];
-    bool result = valueMap["result"];
-    if (isSuccess) {
-      return result;
-    } else {
-      throw valueMap["message"];
+    try {
+      dynamic data = await _channel.invokeMethod(
+          BlaConstants.MARK_RECEIVE_MESSAGE, <String, dynamic>{
+        'messageId': messageId,
+        'channelId': channelId
+      });
+      Map valueMap = json.decode(data);
+      bool isSuccess = valueMap["isSuccess"];
+      bool result = valueMap["result"];
+      if (isSuccess) {
+        return result;
+      } else {
+        throw valueMap["message"];
+      }
+    } catch(e) {
+      throw e.toString();
     }
   }
 
   Future<BlaMessage> createMessage(String content, String channelId,
       BlaMessageType type, Map<String, dynamic> customData) async {
-    var customDataString = json.encode(customData);
-    dynamic data = await _channel
-        .invokeMethod(BlaConstants.CREATE_MESSAGE, <String, dynamic>{
-      'content': content,
-      'channelId': channelId,
-      'type': BlaUtils.getBlaMessageTypeRawValue(type),
-      'customData': customDataString
-    });
-    Map valueMap = json.decode(data);
-    bool isSuccess = valueMap["isSuccess"];
-    if (isSuccess) {
-      var message = BlaMessage.fromJson(json.decode(valueMap["result"]));
-      return message;
-    } else {
-      throw valueMap["message"];
+    try {
+      var customDataString = json.encode(customData);
+      dynamic data = await _channel
+          .invokeMethod(BlaConstants.CREATE_MESSAGE, <String, dynamic>{
+        'content': content,
+        'channelId': channelId,
+        'type': BlaUtils.getBlaMessageTypeRawValue(type),
+        'customData': customDataString
+      });
+      Map valueMap = json.decode(data);
+      bool isSuccess = valueMap["isSuccess"];
+      if (isSuccess) {
+        var message = BlaMessage.fromJson(json.decode(valueMap["result"]));
+        return message;
+      } else {
+        throw valueMap["message"];
+      }
+    } catch (e) {
+      throw e.toString();
     }
   }
 
   Future<BlaMessage> updateMessage(BlaMessage message) async {
-    var jsonMessage = jsonEncode(message.toJson());
-    dynamic data = await _channel
-        .invokeMethod(BlaConstants.UPDATE_MESSAGE, <String, dynamic>{
-      'message': jsonMessage
-    });
-    Map valueMap = json.decode(data);
-    bool isSuccess = valueMap["isSuccess"];
-    if (isSuccess) {
-      var mess = BlaMessage.fromJson(json.decode(valueMap["result"]));
-      return mess;
-    } else {
-      throw valueMap["message"];
+    try {
+      var jsonMessage = jsonEncode(message.toJson());
+      dynamic data = await _channel
+          .invokeMethod(BlaConstants.UPDATE_MESSAGE, <String, dynamic>{
+        'message': jsonMessage
+      });
+      Map valueMap = json.decode(data);
+      bool isSuccess = valueMap["isSuccess"];
+      if (isSuccess) {
+        var mess = BlaMessage.fromJson(json.decode(valueMap["result"]));
+        return mess;
+      } else {
+        throw valueMap["message"];
+      }
+    } catch (e) {
+      throw e.toString();
     }
   }
 
   Future<BlaMessage> deleteMessage(BlaMessage message) async {
-    var jsonMessage = jsonEncode(message.toJson());
-    dynamic data = await _channel
-        .invokeMethod(BlaConstants.DELETE_MESSAGE, <String, dynamic>{
-      'message': jsonMessage
-    });
-    Map valueMap = json.decode(data);
-    bool isSuccess = valueMap["isSuccess"];
-    if (isSuccess) {
-      var mess = BlaMessage.fromJson(json.decode(valueMap["result"]));
-      return mess;
-    } else {
-      throw valueMap["message"];
+    try {
+      var jsonMessage = jsonEncode(message.toJson());
+      dynamic data = await _channel
+          .invokeMethod(BlaConstants.DELETE_MESSAGE, <String, dynamic>{
+        'message': jsonMessage
+      });
+      Map valueMap = json.decode(data);
+      bool isSuccess = valueMap["isSuccess"];
+      if (isSuccess) {
+        var mess = BlaMessage.fromJson(json.decode(valueMap["result"]));
+        return mess;
+      } else {
+        throw valueMap["message"];
+      }
+    } catch (e) {
+      throw e.toString();
     }
   }
 
   Future<bool> inviteUserToChannel(
       List<String> userIds, String channelId) async {
-    dynamic data = await _channel.invokeMethod(
-        BlaConstants.INVITE_USER_TO_CHANNEL,
-        <String, dynamic>{'userIds': userIds.join(","), 'channelId': channelId});
-    Map valueMap = json.decode(data);
-    bool isSuccess = valueMap["isSuccess"];
-    bool result = valueMap["result"];
-    if (isSuccess) {
-      return result;
-    } else {
-      throw valueMap["message"];
+    try {
+      dynamic data = await _channel.invokeMethod(
+          BlaConstants.INVITE_USER_TO_CHANNEL,
+          <String, dynamic>{'userIds': userIds.join(","), 'channelId': channelId});
+      Map valueMap = json.decode(data);
+      bool isSuccess = valueMap["isSuccess"];
+      bool result = valueMap["result"];
+      if (isSuccess) {
+        return result;
+      } else {
+        throw valueMap["message"];
+      }
+    } catch (e) {
+      throw e.toString();
     }
   }
 
   Future<bool> removeUserFromChannel(String userId, String channelId) async {
-    dynamic data = await _channel.invokeMethod(
-        BlaConstants.REMOVE_USER_FROM_CHANNEL,
-        <String, dynamic>{'userId': userId, 'channelId': channelId});
-    Map valueMap = json.decode(data);
-    bool isSuccess = valueMap["isSuccess"];
-    bool result = valueMap["result"];
-    if (isSuccess) {
-      return result;
-    } else {
-      throw valueMap["message"];
+    try {
+      dynamic data = await _channel.invokeMethod(
+          BlaConstants.REMOVE_USER_FROM_CHANNEL,
+          <String, dynamic>{'userId': userId, 'channelId': channelId});
+      Map valueMap = json.decode(data);
+      bool isSuccess = valueMap["isSuccess"];
+      bool result = valueMap["result"];
+      if (isSuccess) {
+        return result;
+      } else {
+        throw valueMap["message"];
+      }
+    } catch (e) {
+      throw e.toString();
     }
   }
 
   Future<List<BlaUser>> getUserPresence() async {
-    dynamic data = await _channel
-        .invokeMethod(BlaConstants.GET_USER_PRESENCE, <String, dynamic>{});
-    Map valueMap = json.decode(data);
-    bool isSuccess = valueMap["isSuccess"];
-    if (isSuccess) {
-      return [];
-    } else {
-      throw valueMap["message"];
+    try {
+      dynamic data = await _channel
+          .invokeMethod(BlaConstants.GET_USER_PRESENCE, <String, dynamic>{});
+      Map valueMap = json.decode(data);
+      bool isSuccess = valueMap["isSuccess"];
+      if (isSuccess) {
+        return [];
+      } else {
+        throw valueMap["message"];
+      }
+    } catch (e) {
+      throw e.toString();
     }
   }
 
   Future<bool> updateFCMToken(String fcmToken) async {
-    dynamic data = await _channel
-        .invokeMethod(BlaConstants.UPDATE_FCM_TOKEN, <String, dynamic>{
-          'fcmToken': fcmToken
-    });
-    Map valueMap = json.decode(data);
-    bool isSuccess = valueMap["isSuccess"];
-    bool result = valueMap["result"];
-    if (isSuccess) {
-      return result;
-    } else {
-      throw valueMap["message"];
+    try {
+      dynamic data = await _channel
+          .invokeMethod(BlaConstants.UPDATE_FCM_TOKEN, <String, dynamic>{
+        'fcmToken': fcmToken
+      });
+      Map valueMap = json.decode(data);
+      bool isSuccess = valueMap["isSuccess"];
+      bool result = valueMap["result"];
+      if (isSuccess) {
+        return result;
+      } else {
+        throw valueMap["message"];
+      }
+    } catch (e) {
+      throw e.toString();
     }
   }
 
   Future<bool> logoutBlaChatSDK() async {
-    dynamic data = await _channel
-        .invokeMethod(BlaConstants.LOGOUT_BLACHATSDK, <String, dynamic>{});
-    Map valueMap = json.decode(data);
-    bool isSuccess = valueMap["isSuccess"];
-    bool result = valueMap["result"];
-    if (isSuccess) {
-      return result;
-    } else {
-      throw valueMap["message"];
+    try {
+      dynamic data = await _channel
+          .invokeMethod(BlaConstants.LOGOUT_BLACHATSDK, <String, dynamic>{});
+      Map valueMap = json.decode(data);
+      bool isSuccess = valueMap["isSuccess"];
+      bool result = valueMap["result"];
+      if (isSuccess) {
+        return result;
+      } else {
+        throw valueMap["message"];
+      }
+    } catch (e) {
+      throw e.toString();
     }
   }
 }

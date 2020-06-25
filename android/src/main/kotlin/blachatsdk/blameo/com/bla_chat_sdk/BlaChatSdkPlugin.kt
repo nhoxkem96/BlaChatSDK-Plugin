@@ -48,6 +48,8 @@ class BlaChatSdkPlugin : MethodCallHandler {
   private val REMOVE_USER_FROM_CHANNEL = "removeUserFromChannel"
   private val GET_USER_PRESENCE = "getUserPresence"
   private val SEARCH_CHANNELS = "searchChannels"
+  private val UPDATE_FCM_TOKEN = "updateFCMToken";
+  private val LOGOUT_BLACHATSDK = "logoutBlaChatSDK";
 
 
   var thread: Thread? = null
@@ -55,7 +57,8 @@ class BlaChatSdkPlugin : MethodCallHandler {
   val SHARED_PREFERENCES_NAME = "shared_preference"
   private var context: Activity? = null
   private var channel: MethodChannel? = null
-  var myGson =  GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create()
+  var myGson = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create()
+
   companion object {
     @JvmStatic
     fun registerWith(registrar: Registrar) {
@@ -91,123 +94,123 @@ class BlaChatSdkPlugin : MethodCallHandler {
       }
 
 
-      BlaChatSDK.getInstance().addChannelListener(object: ChannelEventListener{
+      BlaChatSDK.getInstance().addChannelListener(object : ChannelEventListener {
         override fun onMemberLeave(p0: BlaChannel?, p1: BlaUser?) {
           this@BlaChatSdkPlugin.context?.runOnUiThread {
-              val dict = HashMap<String, Any>()
-              dict["channel"] = myGson.toJson(p0)
-              dict["user"] = myGson.toJson(p1)
-              this@BlaChatSdkPlugin.channel!!.invokeMethod("onMemberLeave", dict)
+            val dict = HashMap<String, Any>()
+            dict["channel"] = myGson.toJson(p0)
+            dict["user"] = myGson.toJson(p1)
+            this@BlaChatSdkPlugin.channel!!.invokeMethod("onMemberLeave", dict)
           }
         }
 
         override fun onUserReceiveMessage(p0: BlaChannel?, p1: BlaUser?, p2: BlaMessage?) {
           this@BlaChatSdkPlugin.context?.runOnUiThread {
-              var dict = HashMap<String, Any>()
-              dict["channel"] = myGson.toJson(p0)
-              dict["user"] = myGson.toJson(p1)
-              dict["message"] = myGson.toJson(p2)
-              this@BlaChatSdkPlugin.channel!!.invokeMethod("onUserReceiveMessage", dict)
+            var dict = HashMap<String, Any>()
+            dict["channel"] = myGson.toJson(p0)
+            dict["user"] = myGson.toJson(p1)
+            dict["message"] = myGson.toJson(p2)
+            this@BlaChatSdkPlugin.channel!!.invokeMethod("onUserReceiveMessage", dict)
           }
         }
 
         override fun onDeleteChannel(p0: BlaChannel?) {
           this@BlaChatSdkPlugin.context?.runOnUiThread {
-              var dict = HashMap<String, Any>()
-              dict["channel"] = myGson.toJson(p0)
-              this@BlaChatSdkPlugin.channel!!.invokeMethod("onDeleteChannel", dict)
+            var dict = HashMap<String, Any>()
+            dict["channel"] = myGson.toJson(p0)
+            this@BlaChatSdkPlugin.channel!!.invokeMethod("onDeleteChannel", dict)
           }
         }
 
         override fun onTyping(p0: BlaChannel?, p1: BlaUser?, p2: EventType?) {
           this@BlaChatSdkPlugin.context?.runOnUiThread {
-              var dict = HashMap<String, Any>()
-              dict["channel"] = myGson.toJson(p0)
-              dict["user"] = myGson.toJson(p1)
-              dict["type"] = if(p2 == EventType.START) 1 else 0
-              this@BlaChatSdkPlugin.channel!!.invokeMethod("onTyping", dict)
+            var dict = HashMap<String, Any>()
+            dict["channel"] = myGson.toJson(p0)
+            dict["user"] = myGson.toJson(p1)
+            dict["type"] = if (p2 == EventType.START) 1 else 0
+            this@BlaChatSdkPlugin.channel!!.invokeMethod("onTyping", dict)
           }
         }
 
         override fun onNewChannel(p0: BlaChannel?) {
           this@BlaChatSdkPlugin.context?.runOnUiThread {
-              var dict = HashMap<String, Any>()
-              dict["channel"] = myGson.toJson(p0)
-              this@BlaChatSdkPlugin.channel!!.invokeMethod("onNewChannel", dict)
+            var dict = HashMap<String, Any>()
+            dict["channel"] = myGson.toJson(p0)
+            this@BlaChatSdkPlugin.channel!!.invokeMethod("onNewChannel", dict)
           }
         }
 
         override fun onUserSeenMessage(p0: BlaChannel?, p1: BlaUser?, p2: BlaMessage?) {
           this@BlaChatSdkPlugin.context?.runOnUiThread {
-              var dict = HashMap<String, Any>()
-              dict["channel"] = myGson.toJson(p0)
-              dict["user"] = myGson.toJson(p1)
-              dict["message"] = myGson.toJson(p2)
-              this@BlaChatSdkPlugin.channel!!.invokeMethod("onUserSeenMessage", dict)
+            var dict = HashMap<String, Any>()
+            dict["channel"] = myGson.toJson(p0)
+            dict["user"] = myGson.toJson(p1)
+            dict["message"] = myGson.toJson(p2)
+            this@BlaChatSdkPlugin.channel!!.invokeMethod("onUserSeenMessage", dict)
           }
         }
 
         override fun onUpdateChannel(p0: BlaChannel?) {
           this@BlaChatSdkPlugin.context?.runOnUiThread {
-              var dict = HashMap<String, Any>()
-              dict["channel"] = myGson.toJson(p0)
-              this@BlaChatSdkPlugin.channel!!.invokeMethod("onUpdateChannel", dict)
+            var dict = HashMap<String, Any>()
+            dict["channel"] = myGson.toJson(p0)
+            this@BlaChatSdkPlugin.channel!!.invokeMethod("onUpdateChannel", dict)
           }
         }
 
         override fun onMemberJoin(p0: BlaChannel?, p1: BlaUser?) {
           this@BlaChatSdkPlugin.context?.runOnUiThread {
-              var dict = HashMap<String, Any>()
-              dict["channel"] = myGson.toJson(p0)
-              dict["user"] = myGson.toJson(p1)
-              this@BlaChatSdkPlugin.channel!!.invokeMethod("onMemberJoin", dict)
+            var dict = HashMap<String, Any>()
+            dict["channel"] = myGson.toJson(p0)
+            dict["user"] = myGson.toJson(p1)
+            this@BlaChatSdkPlugin.channel!!.invokeMethod("onMemberJoin", dict)
           }
         }
       })
 
-      BlaChatSDK.getInstance().addMessageListener(object: MessagesListener{
+      BlaChatSDK.getInstance().addMessageListener(object : MessagesListener {
         override fun onNewMessage(p0: BlaMessage?) {
           this@BlaChatSdkPlugin.context?.runOnUiThread {
-              var dict = HashMap<String, Any>()
-              Log.i("test", "onNewMessage " + myGson.toJson(p0))
-              dict["message"] = myGson.toJson(p0)
-              this@BlaChatSdkPlugin.channel!!.invokeMethod("onNewMessage", dict)
+            var dict = HashMap<String, Any>()
+            Log.i("test", "onNewMessage " + myGson.toJson(p0))
+            dict["message"] = myGson.toJson(p0)
+            this@BlaChatSdkPlugin.channel!!.invokeMethod("onNewMessage", dict)
           }
         }
 
         override fun onUpdateMessage(p0: BlaMessage?) {
           this@BlaChatSdkPlugin.context?.runOnUiThread {
-              var dict = HashMap<String, Any>()
-              dict["message"] = myGson.toJson(p0)
-              this@BlaChatSdkPlugin.channel!!.invokeMethod("onUpdateMessage", dict)
+            var dict = HashMap<String, Any>()
+            dict["message"] = myGson.toJson(p0)
+            this@BlaChatSdkPlugin.channel!!.invokeMethod("onUpdateMessage", dict)
           }
         }
 
         override fun onDeleteMessage(p0: BlaMessage?) {
           this@BlaChatSdkPlugin.context?.runOnUiThread {
-              val dict = HashMap<String, Any>()
-              dict["message"] = myGson.toJson(p0)
-              this@BlaChatSdkPlugin.channel!!.invokeMethod("onDeleteMessage", dict)
+            val dict = HashMap<String, Any>()
+            dict["message"] = myGson.toJson(p0)
+            this@BlaChatSdkPlugin.channel!!.invokeMethod("onDeleteMessage", dict)
           }
         }
 
         override fun onUserSeen(p0: BlaMessage?, p1: BlaUser?, p2: Date?) {
           this@BlaChatSdkPlugin.context?.runOnUiThread {
-              val dict = HashMap<String, Any>()
-              dict["message"] = myGson.toJson(p0)
-              dict["user"] = myGson.toJson(p1)
-              dict["seenAt"] = p2!!.time
-              this@BlaChatSdkPlugin.channel!!.invokeMethod("onUserSeen", dict)
+            val dict = HashMap<String, Any>()
+            dict["message"] = myGson.toJson(p0)
+            dict["user"] = myGson.toJson(p1)
+            dict["seenAt"] = p2!!.time
+            this@BlaChatSdkPlugin.channel!!.invokeMethod("onUserSeen", dict)
           }
         }
 
         override fun onUserReceive(p0: BlaMessage?, p1: BlaUser?, p2: Date?) {
           this@BlaChatSdkPlugin.context?.runOnUiThread {
-              val dict = HashMap<String, Any>()
-              dict["message"] = myGson.toJson(p0)
-              dict["user"] = myGson.toJson(p1)
-              dict["receivedAt"] = p2!!.time
-              this@BlaChatSdkPlugin.channel!!.invokeMethod("onUserReceive", dict)
+            val dict = HashMap<String, Any>()
+            dict["message"] = myGson.toJson(p0)
+            dict["user"] = myGson.toJson(p1)
+            dict["receivedAt"] = p2!!.time
+            this@BlaChatSdkPlugin.channel!!.invokeMethod("onUserReceive", dict)
           }
         }
       })
@@ -237,7 +240,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
 
     } else if (call.method == GET_CHANNELS) {
       try {
-        if (arguments == null){
+        if (arguments == null) {
           result.error("01", "arguments is null", arguments)
           return
         }
@@ -248,8 +251,8 @@ class BlaChatSdkPlugin : MethodCallHandler {
             this@BlaChatSdkPlugin.context?.runOnUiThread {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = true
-              dict["result"] = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create().toJson(p0)
-              val jsonString = Gson().toJson(dict);
+              dict["result"] = myGson.toJson(p0)
+              val jsonString = myGson.toJson(dict);
               result.success(jsonString);
             }
           }
@@ -260,7 +263,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = false
               dict["message"] = p0.toString()
-              val jsonString = Gson().toJson(dict);
+              val jsonString = myGson.toJson(dict);
               result.success(jsonString);
             }
           }
@@ -269,31 +272,32 @@ class BlaChatSdkPlugin : MethodCallHandler {
         val dict = HashMap<String, Any>()
         dict["isSuccess"] = false
         dict["message"] = e.toString()
-        val jsonString = Gson().toJson(dict);
+        val jsonString = myGson.toJson(dict);
         result.success(jsonString)
       }
     } else if (call.method == GET_USERS_IN_CHANNEL) {
       try {
         val channelId = arguments["channelId"] as String
-        BlaChatSDK.getInstance().getUsersInChannel(channelId, object: Callback<List<BlaUser>> {
+        BlaChatSDK.getInstance().getUsersInChannel(channelId, object : Callback<List<BlaUser>> {
           override fun onSuccess(p0: List<BlaUser>?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
               override fun run() {
                 val dict = HashMap<String, Any>()
                 dict["isSuccess"] = true
-                dict["result"] = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create().toJson(p0)
-                val jsonString = Gson().toJson(dict)
+                dict["result"] = myGson.toJson(p0)
+                val jsonString = myGson.toJson(dict)
                 result.success(jsonString)
               }
             })
           }
+
           override fun onFail(p0: Exception?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
               override fun run() {
                 val dict = HashMap<String, Any>()
                 dict["isSuccess"] = false
                 dict["message"] = p0.toString()
-                val jsonString = Gson().toJson(dict)
+                val jsonString = myGson.toJson(dict)
                 result.success(jsonString)
               }
             })
@@ -303,32 +307,33 @@ class BlaChatSdkPlugin : MethodCallHandler {
         val dict = HashMap<String, Any>()
         dict["isSuccess"] = false
         dict["message"] = e.toString()
-        val jsonString = Gson().toJson(dict);
+        val jsonString = myGson.toJson(dict);
         result.success(jsonString)
       }
     } else if (call.method == GET_USERS) {
       try {
         val userIds = arguments["userIds"] as String
-        val listUserId = userIds.split(",").toMutableList()  as ArrayList<String>
-        BlaChatSDK.getInstance().getUsers(listUserId, object: Callback<List<BlaUser>> {
+        val listUserId = userIds.split(",").toMutableList() as ArrayList<String>
+        BlaChatSDK.getInstance().getUsers(listUserId, object : Callback<List<BlaUser>> {
           override fun onSuccess(p0: List<BlaUser>?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
               override fun run() {
                 val dict = HashMap<String, Any>()
                 dict["isSuccess"] = true
-                dict["result"] = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create().toJson(p0)
-                val jsonString = Gson().toJson(dict)
+                dict["result"] = myGson.create().toJson(p0)
+                val jsonString = myGson.toJson(dict)
                 result.success(jsonString)
               }
             })
           }
+
           override fun onFail(p0: Exception?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread(object : Runnable {
               override fun run() {
                 val dict = HashMap<String, Any>()
                 dict["isSuccess"] = false
                 dict["message"] = p0.toString()
-                val jsonString = Gson().toJson(dict)
+                val jsonString = myGson.toJson(dict)
                 result.success(jsonString)
               }
             })
@@ -338,7 +343,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
         val dict = HashMap<String, Any>()
         dict["isSuccess"] = false
         dict["message"] = e.toString()
-        val jsonString = Gson().toJson(dict);
+        val jsonString = myGson.toJson(dict);
         result.success(jsonString)
       }
     } else if (call.method == GET_MESSAGES) {
@@ -346,22 +351,23 @@ class BlaChatSdkPlugin : MethodCallHandler {
         val channelId = arguments["channelId"] as String
         val lastId = arguments["lastId"] as String
         val limit = arguments["limit"] as Int
-        BlaChatSDK.getInstance().getMessages(channelId, lastId, limit, object: Callback<List<BlaMessage>> {
+        BlaChatSDK.getInstance().getMessages(channelId, lastId, limit, object : Callback<List<BlaMessage>> {
           override fun onSuccess(p0: List<BlaMessage>?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = true
-              dict["result"] = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create().toJson(p0)
-              val jsonString = Gson().toJson(dict)
+              dict["result"] = myGson.toJson(p0)
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
+
           override fun onFail(p0: Exception?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = false
               dict["message"] = p0.toString()
-              val jsonString = Gson().toJson(dict)
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
@@ -370,7 +376,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
         val dict = HashMap<String, Any>()
         dict["isSuccess"] = false
         dict["message"] = e.toString()
-        val jsonString = Gson().toJson(dict);
+        val jsonString = myGson.toJson(dict);
         result.success(jsonString)
       }
     } else if (call.method == CREATE_CHANNEL) {
@@ -381,27 +387,28 @@ class BlaChatSdkPlugin : MethodCallHandler {
         val avatar = arguments["avatar"] as String
         val customDataString = arguments["customData"] as String
         val customData = GsonUtil.jsonToMap(customDataString)
-        val listUserId = userIds.split(",").toMutableList()  as ArrayList<String>
+        val listUserId = userIds.split(",").toMutableList() as ArrayList<String>
         var channelType = BlaChannelType.GROUP
         if (type == 2) {
           channelType = BlaChannelType.DIRECT
         }
-        BlaChatSDK.getInstance().createChannel(name, avatar, listUserId, channelType, customData, object: Callback<BlaChannel> {
+        BlaChatSDK.getInstance().createChannel(name, avatar, listUserId, channelType, customData, object : Callback<BlaChannel> {
           override fun onSuccess(p0: BlaChannel?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = true
-              dict["result"] = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create().toJson(p0)
-              val jsonString = Gson().toJson(dict)
+              dict["result"] = myGson.toJson(p0)
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
+
           override fun onFail(p0: Exception?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = false
               dict["message"] = p0.toString()
-              val jsonString = Gson().toJson(dict)
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
@@ -410,30 +417,31 @@ class BlaChatSdkPlugin : MethodCallHandler {
         val dict = HashMap<String, Any>()
         dict["isSuccess"] = false
         dict["message"] = e.toString()
-        val jsonString = Gson().toJson(dict);
+        val jsonString = myGson.toJson(dict);
         result.success(jsonString)
       }
     } else if (call.method == UPDATE_CHANNEL) {
       try {
         val jsonChannel = arguments["channel"] as String
-        val channel = Gson().fromJson(jsonChannel, BlaChannel::class.java)
+        val channel = myGson.fromJson(jsonChannel, BlaChannel::class.java)
 
-        BlaChatSDK.getInstance().updateChannel(channel, object: Callback<BlaChannel> {
+        BlaChatSDK.getInstance().updateChannel(channel, object : Callback<BlaChannel> {
           override fun onSuccess(p0: BlaChannel?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = true
-              dict["result"] = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create().toJson(p0)
-              val jsonString = Gson().toJson(dict)
+              dict["result"] = myGson.toJson(p0)
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
+
           override fun onFail(p0: Exception?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = false
               dict["message"] = p0.toString()
-              val jsonString = Gson().toJson(dict)
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
@@ -442,30 +450,31 @@ class BlaChatSdkPlugin : MethodCallHandler {
         val dict = HashMap<String, Any>()
         dict["isSuccess"] = false
         dict["message"] = e.toString()
-        val jsonString = Gson().toJson(dict);
+        val jsonString = myGson.toJson(dict);
         result.success(jsonString)
       }
     } else if (call.method == DELETE_CHANNEL) {
       try {
         val jsonChannel = arguments["channel"] as String
-        val channel = Gson().fromJson(jsonChannel, BlaChannel::class.java)
+        val channel = myGson.fromJson(jsonChannel, BlaChannel::class.java)
 
-        BlaChatSDK.getInstance().deleteChannel(channel, object: Callback<BlaChannel> {
+        BlaChatSDK.getInstance().deleteChannel(channel, object : Callback<BlaChannel> {
           override fun onSuccess(p0: BlaChannel?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = true
-              dict["result"] = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create().toJson(p0)
-              val jsonString = Gson().toJson(dict)
+              dict["result"] = myGson.toJson(p0)
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
+
           override fun onFail(p0: Exception?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = false
               dict["message"] = p0.toString()
-              val jsonString = Gson().toJson(dict)
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
@@ -474,20 +483,20 @@ class BlaChatSdkPlugin : MethodCallHandler {
         val dict = HashMap<String, Any>()
         dict["isSuccess"] = false
         dict["message"] = e.toString()
-        val jsonString = Gson().toJson(dict);
+        val jsonString = myGson.toJson(dict);
         result.success(jsonString)
       }
     } else if (call.method == SEND_START_TYPING) {
       try {
         val channelId = arguments["channelId"] as String
 
-        BlaChatSDK.getInstance().sendStartTyping(channelId, object: Callback<Boolean> {
+        BlaChatSDK.getInstance().sendStartTyping(channelId, object : Callback<Boolean> {
           override fun onSuccess(p0: Boolean?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = true
-              dict["result"] = p0?:false
-              val jsonString = Gson().toJson(dict)
+              dict["result"] = p0 ?: false
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
@@ -497,7 +506,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = false
               dict["message"] = p0.toString()
-              val jsonString = Gson().toJson(dict)
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
@@ -506,19 +515,19 @@ class BlaChatSdkPlugin : MethodCallHandler {
         val dict = HashMap<String, Any>()
         dict["isSuccess"] = false
         dict["message"] = e.toString()
-        val jsonString = Gson().toJson(dict);
+        val jsonString = myGson.toJson(dict);
         result.success(jsonString)
       }
     } else if (call.method == SEND_STOP_TYPING) {
       try {
         val channelId = arguments["channelId"] as String
-        BlaChatSDK.getInstance().sendStopTyping(channelId, object: Callback<Boolean> {
+        BlaChatSDK.getInstance().sendStopTyping(channelId, object : Callback<Boolean> {
           override fun onSuccess(p0: Boolean?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = true
-              dict["result"] = p0?:false
-              val jsonString = Gson().toJson(dict)
+              dict["result"] = p0 ?: false
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
@@ -528,7 +537,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = false
               dict["message"] = p0.toString()
-              val jsonString = Gson().toJson(dict)
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
@@ -537,7 +546,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
         val dict = HashMap<String, Any>()
         dict["isSuccess"] = false
         dict["message"] = e.toString()
-        val jsonString = Gson().toJson(dict);
+        val jsonString = myGson.toJson(dict);
         result.success(jsonString)
       }
     } else if (call.method == MARK_SEEN_MESSAGE) {
@@ -545,13 +554,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
         val messageId = arguments["messageId"] as String
         val channelId = arguments["channelId"] as String
 
-        BlaChatSDK.getInstance().markSeenMessage(messageId, channelId, object: Callback<Boolean> {
+        BlaChatSDK.getInstance().markSeenMessage(messageId, channelId, object : Callback<Boolean> {
           override fun onSuccess(p0: Boolean?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread {
               val dict = HashMap<String, Any?>()
-              dict["isSuccess"] = p0?:false
+              dict["isSuccess"] = p0 ?: false
               dict["result"] = null
-              val jsonString = Gson().toJson(dict)
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
@@ -561,7 +570,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = false
               dict["message"] = p0.toString()
-              val jsonString = Gson().toJson(dict)
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
@@ -570,7 +579,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
         val dict = HashMap<String, Any>()
         dict["isSuccess"] = false
         dict["message"] = e.toString()
-        val jsonString = Gson().toJson(dict);
+        val jsonString = myGson.toJson(dict);
         result.success(jsonString)
       }
     } else if (call.method == MARK_RECEIVE_MESSAGE) {
@@ -578,13 +587,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
         val messageId = arguments["messageId"] as String
         val channelId = arguments["channelId"] as String
 
-        BlaChatSDK.getInstance().markReceiveMessage(messageId, channelId, object: Callback<Boolean> {
+        BlaChatSDK.getInstance().markReceiveMessage(messageId, channelId, object : Callback<Boolean> {
           override fun onSuccess(p0: Boolean?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = true
-              dict["result"] = p0?:false
-              val jsonString = Gson().toJson(dict)
+              dict["result"] = p0 ?: false
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
@@ -594,7 +603,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
               var dict = HashMap<String, Any>()
               dict["isSuccess"] = false
               dict["message"] = p0.toString()
-              val jsonString = Gson().toJson(dict);
+              val jsonString = myGson.toJson(dict);
               result.success(jsonString);
             }
           }
@@ -603,7 +612,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
         val dict = HashMap<String, Any>()
         dict["isSuccess"] = false
         dict["message"] = e.toString()
-        val jsonString = Gson().toJson(dict);
+        val jsonString = myGson.toJson(dict);
         result.success(jsonString)
       }
     } else if (call.method == CREATE_MESSAGE) {
@@ -618,16 +627,15 @@ class BlaChatSdkPlugin : MethodCallHandler {
         }
         val customDataString = arguments["customData"] as String
 
-        val typeMap = object: TypeToken<Map<String, Any>>(){}.type
-        val customData: Map<String, Any> = myGson.fromJson(customDataString, typeMap);
+        val customData = GsonUtil.jsonToMap(customDataString)
 
-        BlaChatSDK.getInstance().createMessage(content, channelId, blaMessageType, customData, object: Callback<BlaMessage> {
+        BlaChatSDK.getInstance().createMessage(content, channelId, blaMessageType, customData, object : Callback<BlaMessage> {
           override fun onSuccess(p0: BlaMessage?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = true
-              dict["result"] = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create().toJson(p0)
-              val jsonString = Gson().toJson(dict)
+              dict["result"] = myGson.toJson(p0)
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
@@ -637,7 +645,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = false
               dict["message"] = p0.toString()
-              val jsonString = Gson().toJson(dict);
+              val jsonString = myGson.toJson(dict);
               result.success(jsonString);
             }
           }
@@ -652,15 +660,15 @@ class BlaChatSdkPlugin : MethodCallHandler {
     } else if (call.method == UPDATE_MESSAGE) {
       try {
         val jsonMessage = arguments["message"] as String
-        val message = Gson().fromJson(jsonMessage, BlaMessage::class.java)
+        val message = myGson.fromJson(jsonMessage, BlaMessage::class.java)
 
         BlaChatSDK.getInstance().updateMessage(message, object : Callback<BlaMessage> {
           override fun onSuccess(p0: BlaMessage?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = true
-              dict["result"] = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create().toJson(p0)
-              val jsonString = Gson().toJson(dict)
+              dict["result"] = myGson.toJson(p0)
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
@@ -670,7 +678,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = false
               dict["message"] = p0.toString()
-              val jsonString = Gson().toJson(dict)
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
@@ -679,21 +687,21 @@ class BlaChatSdkPlugin : MethodCallHandler {
         val dict = HashMap<String, Any>()
         dict["isSuccess"] = false
         dict["message"] = e.toString()
-        val jsonString = Gson().toJson(dict);
+        val jsonString = myGson.toJson(dict);
         result.success(jsonString)
       }
     } else if (call.method == DELETE_MESSAGE) {
       try {
         val jsonMessage = arguments["message"] as String
-        val message = Gson().fromJson(jsonMessage, BlaMessage::class.java)
+        val message = myGson.fromJson(jsonMessage, BlaMessage::class.java)
 
         BlaChatSDK.getInstance().deleteMessage(message, object : Callback<BlaMessage> {
           override fun onSuccess(p0: BlaMessage?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = true
-              dict["result"] = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create().toJson(p0)
-              val jsonString = Gson().toJson(dict)
+              dict["result"] = myGson.toJson(p0)
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
@@ -703,7 +711,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = false
               dict["message"] = p0.toString()
-              val jsonString = Gson().toJson(dict)
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
@@ -712,22 +720,22 @@ class BlaChatSdkPlugin : MethodCallHandler {
         val dict = HashMap<String, Any>()
         dict["isSuccess"] = false
         dict["message"] = e.toString()
-        val jsonString = Gson().toJson(dict);
+        val jsonString = myGson.toJson(dict);
         result.success(jsonString)
       }
     } else if (call.method == INVITE_USER_TO_CHANNEL) {
       try {
         val userIds = arguments["userIds"] as String
         val channelId = arguments["channelId"] as String
-        val listUserId = userIds.split(",").toMutableList()  as ArrayList<String>
+        val listUserId = userIds.split(",").toMutableList() as ArrayList<String>
 
-        BlaChatSDK.getInstance().inviteUserToChannel(listUserId, channelId, object: Callback<Boolean> {
+        BlaChatSDK.getInstance().inviteUserToChannel(listUserId, channelId, object : Callback<Boolean> {
           override fun onSuccess(p0: Boolean?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = true
-              dict["result"] = p0?:false
-              val jsonString = Gson().toJson(dict)
+              dict["result"] = p0 ?: false
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
@@ -737,7 +745,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = false
               dict["message"] = p0.toString()
-              val jsonString = Gson().toJson(dict);
+              val jsonString = myGson.toJson(dict);
               result.success(jsonString);
             }
           }
@@ -746,7 +754,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
         val dict = HashMap<String, Any>()
         dict["isSuccess"] = false
         dict["message"] = e.toString()
-        val jsonString = Gson().toJson(dict);
+        val jsonString = myGson.toJson(dict);
         result.success(jsonString)
       }
     } else if (call.method == REMOVE_USER_FROM_CHANNEL) {
@@ -754,13 +762,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
         val userId = arguments["userId"] as String
         val channelId = arguments["channelId"] as String
 
-        BlaChatSDK.getInstance().removeUserFromChannel(userId, channelId, object: Callback<Boolean> {
+        BlaChatSDK.getInstance().removeUserFromChannel(userId, channelId, object : Callback<Boolean> {
           override fun onSuccess(p0: Boolean?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = true
-              dict["result"] = p0?:false
-              val jsonString = Gson().toJson(dict)
+              dict["result"] = p0 ?: false
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
@@ -770,7 +778,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = false
               dict["message"] = p0.toString()
-              val jsonString = Gson().toJson(dict);
+              val jsonString = myGson.toJson(dict);
               result.success(jsonString);
             }
           }
@@ -779,21 +787,18 @@ class BlaChatSdkPlugin : MethodCallHandler {
         val dict = HashMap<String, Any>()
         dict["isSuccess"] = false
         dict["message"] = e.toString()
-        val jsonString = Gson().toJson(dict);
+        val jsonString = myGson.toJson(dict);
         result.success(jsonString)
       }
     } else if (call.method == GET_USER_PRESENCE) {
-
-    } else if (call.method == SEARCH_CHANNELS) {
       try {
-        val q = arguments["q"] as String
-        BlaChatSDK.getInstance().searchChannels(q, object: Callback<List<BlaChannel>> {
-          override fun onSuccess(rs: List<BlaChannel>?) {
+        BlaChatSDK.getInstance().getUserPresence(object : Callback<List<BlaUser>> {
+          override fun onSuccess(rs: List<BlaUser>?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = true
-              dict["result"] = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create().toJson(rs)
-              val jsonString = Gson().toJson(dict)
+              dict["result"] = myGson.toJson(rs)
+              val jsonString = myGson.toJson(dict)
               result.success(jsonString)
             }
           }
@@ -802,11 +807,53 @@ class BlaChatSdkPlugin : MethodCallHandler {
             val dict = HashMap<String, Any>()
             dict["isSuccess"] = false
             dict["message"] = e.toString()
-            val jsonString = Gson().toJson(dict);
+            val jsonString = myGson.toJson(dict);
+            result.success(jsonString)
+          }
+        })
+      } catch(e: Exception) {
+        val dict = HashMap<kotlin.String, kotlin.Any>()
+        dict["isSuccess"] = false
+        dict["message"] = e.toString()
+        val jsonString = myGson.toJson(dict);
+        result.success(jsonString)
+      }
+    } else if (call.method == SEARCH_CHANNELS) {
+      try {
+        val q = arguments["query"] as String
+        BlaChatSDK.getInstance().searchChannels(q, object : Callback<List<BlaChannel>> {
+          override fun onSuccess(rs: List<BlaChannel>?) {
+            this@BlaChatSdkPlugin.context?.runOnUiThread {
+              val dict = HashMap<String, Any>()
+              dict["isSuccess"] = true
+              dict["result"] = myGson.toJson(rs)
+              val jsonString = myGson.toJson(dict)
+              result.success(jsonString)
+            }
+          }
+
+          override fun onFail(e: Exception?) {
+            val dict = HashMap<String, Any>()
+            dict["isSuccess"] = false
+            dict["message"] = e.toString()
+            val jsonString = myGson.toJson(dict);
             result.success(jsonString)
           }
 
         })
+      } catch (e: Exception) {
+        result.error("EXCEPTION", e.message, e)
+      }
+    } else if (call.method == UPDATE_FCM_TOKEN) {
+      try {
+        val fcmToken = arguments["fcmToken"] as String
+        BlaChatSDK.getInstance().updateFCMToken(fcmToken);
+      } catch (e: Exception) {
+        result.error("EXCEPTION", e.message, e)
+      }
+    } else if (call.method == LOGOUT_BLACHATSDK) {
+      try {
+        BlaChatSDK.getInstance().logout()
       } catch (e: Exception) {
         result.error("EXCEPTION", e.message, e)
       }
