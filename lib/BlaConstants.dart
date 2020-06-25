@@ -27,6 +27,8 @@ class BlaConstants {
   static String REMOVE_USER_FROM_CHANNEL = "removeUserFromChannel";
   static String GET_USER_PRESENCE = "getUserPresence";
   static String SEARCH_CHANNELS = "searchChannels";
+  static String UPDATE_FCM_TOKEN = "updateFCMToken";
+  static String LOGOUT_BLACHATSDK = "logoutBlaChatSDK";
 
   //Listener
 

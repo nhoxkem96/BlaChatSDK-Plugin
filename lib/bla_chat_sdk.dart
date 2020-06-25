@@ -276,6 +276,27 @@ class BlaChatSdk {
     }
   }
 
+  Future<List<BlaChannel>> searchChannels(String query) async {
+    try {
+      var data = await _channel
+          .invokeMethod(BlaConstants.SEARCH_CHANNELS, <String, dynamic>{
+        'query': query
+      });
+      Map valueMap = json.decode(data);
+      bool isSuccess = valueMap["isSuccess"];
+      if (isSuccess) {
+        List<dynamic> result = json.decode(valueMap["result"]);
+        List<BlaChannel> channels =
+        result.map((item) => BlaChannel.fromJson(item)).toList();
+        return channels;
+      } else {
+        throw valueMap["message"];
+      }
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
   Future<List<BlaUser>> getUsersInChannel(String channelId) async {
     dynamic data = await _channel
         .invokeMethod(BlaConstants.GET_USERS_IN_CHANNEL, <String, dynamic>{
@@ -534,16 +555,29 @@ class BlaChatSdk {
     }
   }
 
-  Future<List<BlaChannel>> searchChannels(String q) async {
+  Future<bool> updateFCMToken(String fcmToken) async {
     dynamic data = await _channel
-        .invokeMethod(BlaConstants.SEARCH_CHANNELS, <String, dynamic>{});
+        .invokeMethod(BlaConstants.UPDATE_FCM_TOKEN, <String, dynamic>{
+          'fcmToken': fcmToken
+    });
     Map valueMap = json.decode(data);
     bool isSuccess = valueMap["isSuccess"];
+    bool result = valueMap["result"];
     if (isSuccess) {
-      List<dynamic> result = json.decode(valueMap["result"]);
-      List<BlaChannel> channels =
-      result.map((item) => BlaChannel.fromJson(item)).toList();
-      return channels;
+      return result;
+    } else {
+      throw valueMap["message"];
+    }
+  }
+
+  Future<bool> logoutBlaChatSDK() async {
+    dynamic data = await _channel
+        .invokeMethod(BlaConstants.LOGOUT_BLACHATSDK, <String, dynamic>{});
+    Map valueMap = json.decode(data);
+    bool isSuccess = valueMap["isSuccess"];
+    bool result = valueMap["result"];
+    if (isSuccess) {
+      return result;
     } else {
       throw valueMap["message"];
     }

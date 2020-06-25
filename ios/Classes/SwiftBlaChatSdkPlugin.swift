@@ -31,6 +31,9 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
     final let INVITE_USER_TO_CHANNEL = "inviteUserToChannel";
     final let REMOVE_USER_FROM_CHANNEL = "removeUserFromChannel";
     final let GET_USER_PRESENCE = "getUserPresence";
+    final let UPDATE_FCM_TOKEN = "updateFCMToken";
+    final let LOGOUT_BLACHATSDK = "logoutBlaChatSDK";
+    final let SEARCH_CHANNELS = "searchChannels";
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "bla_chat_sdk", binaryMessenger: registrar.messenger())
@@ -102,6 +105,35 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
                 let limit = arguments["limit"] as? Int
             {
                 ChatSDK.shareInstance.getChannels(lastId: lastId, limit: limit) { (channels, error) in
+                    if let err = error {
+                        let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
+                        let json = try! JSONSerialization.data(withJSONObject: dict)
+                        let jsonString = String(data: json, encoding: .utf8)!
+                        result(jsonString)
+                    } else {
+                        let formatter = DateFormatter()
+                        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+                        let jsonEncoder = JSONEncoder()
+                        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
+                        let jsonData = try! jsonEncoder.encode(channels)
+                        let jsonResult = String(data: jsonData, encoding: String.Encoding.utf8)
+                        let dict: [String: Any] = ["isSuccess": true, "result": jsonResult!];
+                        let json = try! JSONSerialization.data(withJSONObject: dict)
+                        let jsonString = String(data: json, encoding: .utf8)!
+                        result(jsonString)
+                    }
+                }
+            } else {
+                let dict: [String: Any] = ["isSuccess": false, "message": "Error arguments"];
+                let json = try! JSONSerialization.data(withJSONObject: dict)
+                let jsonString = String(data: json, encoding: .utf8)!
+                result(jsonString)
+            }
+            break
+        case SEARCH_CHANNELS:
+            if let query = arguments["query"] as? String
+            {
+                ChatSDK.shareInstance.searchChannels(query: "Channel") { (channels, error) in
                     if let err = error {
                         let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
                         let json = try! JSONSerialization.data(withJSONObject: dict)
@@ -566,7 +598,54 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
             }
             break
         case GET_USER_PRESENCE:
+            ChatSDK.shareInstance.getUserPresence { (users, error) in
+                if let err = error {
+                    let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
+                    let json = try! JSONSerialization.data(withJSONObject: dict)
+                    let jsonString = String(data: json, encoding: .utf8)!
+                    result(jsonString)
+                } else {
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+                    let jsonEncoder = JSONEncoder()
+                    jsonEncoder.dateEncodingStrategy = .formatted(formatter)
+                    let jsonData = try! jsonEncoder.encode(users)
+                    let jsonResult = String(data: jsonData, encoding: String.Encoding.utf8)
+                    let dict: [String: Any] = ["isSuccess": true, "result": jsonResult!];
+                    let json = try! JSONSerialization.data(withJSONObject: dict)
+                    let jsonString = String(data: json, encoding: .utf8)!
+                    result(jsonString)
+                }
+            }
+            break
             
+        case UPDATE_FCM_TOKEN:
+            if let fcmToken = arguments["fcmToken"] as? String
+            {
+                ChatSDK.shareInstance.updateFCMToken(fcmToken: fcmToken) { (data, error) in
+                    if let err = error {
+                        let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
+                        let json = try! JSONSerialization.data(withJSONObject: dict)
+                        let jsonString = String(data: json, encoding: .utf8)!
+                        result(jsonString)
+                    } else {
+                        let dict: [String: Any] = ["isSuccess": true, "result": data!];
+                        let json = try! JSONSerialization.data(withJSONObject: dict)
+                        let jsonString = String(data: json, encoding: .utf8)!
+                        result(jsonString)
+                    }
+                }
+            } else {
+                let dict: [String: Any] = ["isSuccess": false, "message": "Error arguments"];
+                let json = try! JSONSerialization.data(withJSONObject: dict)
+                let jsonString = String(data: json, encoding: .utf8)!
+                result(jsonString)
+            }
+            break
+            
+        case LOGOUT_BLACHATSDK:
+            ChatSDK.shareInstance.logoutBlaChatSDK()
+            result(true)
             break
         default:
             result(FlutterMethodNotImplemented)
@@ -580,27 +659,14 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         let jsonEncoder = JSONEncoder()
         jsonEncoder.dateEncodingStrategy = .formatted(formatter)
-
+        
         let jsonData1 = try! jsonEncoder.encode(userPresence)
         let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
-
+        
         self._channel.invokeMethod("onUpdate", arguments: [
             "userPresence": jsonResult1!,
         ]);
     }
-//    func onUpdate(userPresence: [BlaUser]) {
-//        let formatter = DateFormatter()
-//        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-//        let jsonEncoder = JSONEncoder()
-//        jsonEncoder.dateEncodingStrategy = .formatted(formatter)
-//
-//        let jsonData1 = try! jsonEncoder.encode(channel)
-//        let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
-//
-//        self._channel.invokeMethod("onNewChannel", arguments: [
-//            "userPresence": jsonResult1!,
-//        ]);
-//    }
     
     public func onNewChannel(channel: BlaChannel) {
         let formatter = DateFormatter()
@@ -649,7 +715,7 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
         
         let jsonData1 = try! jsonEncoder.encode(channel)
         let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
-
+        
         let jsonData2 = try! jsonEncoder.encode(user)
         let jsonResult2 = String(data: jsonData2, encoding: String.Encoding.utf8)
         
@@ -668,7 +734,7 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
         
         let jsonData1 = try! jsonEncoder.encode(channel)
         let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
-
+        
         let jsonData2 = try! jsonEncoder.encode(user)
         let jsonResult2 = String(data: jsonData2, encoding: String.Encoding.utf8)
         
@@ -686,7 +752,7 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
         
         let jsonData1 = try! jsonEncoder.encode(channel)
         let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
-
+        
         let jsonData2 = try! jsonEncoder.encode(user)
         let jsonResult2 = String(data: jsonData2, encoding: String.Encoding.utf8)
         
@@ -743,7 +809,7 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
         
         let jsonData1 = try! jsonEncoder.encode(message)
         let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
-
+        
         let jsonData2 = try! jsonEncoder.encode(user)
         let jsonResult2 = String(data: jsonData2, encoding: String.Encoding.utf8)
         
@@ -762,7 +828,7 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
         
         let jsonData1 = try! jsonEncoder.encode(message)
         let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
-
+        
         let jsonData2 = try! jsonEncoder.encode(user)
         let jsonResult2 = String(data: jsonData2, encoding: String.Encoding.utf8)
         
