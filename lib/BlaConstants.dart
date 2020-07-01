@@ -16,6 +16,7 @@ class BlaConstants {
   static String CREATE_CHANNEL = "createChannel";
   static String UPDATE_CHANNEL = "updateChannel";
   static String DELETE_CHANNEL = "deleteChannel";
+  static String LEAVE_CHANNEL = "leaveChannel";
   static String SEND_START_TYPING = "sendStartTyping";
   static String SEND_STOP_TYPING = "sendStopTyping";
   static String MARK_SEEN_MESSAGE = "markSeenMessage";

@@ -422,6 +422,26 @@ class BlaChatSdk {
     }
   }
 
+  Future<BlaChannel> leaveChannel(BlaChannel channel) async {
+    try {
+      var jsonChannel = jsonEncode(channel.toJson());
+      dynamic data = await _channel.invokeMethod(BlaConstants.LEAVE_CHANNEL,
+          <String, dynamic>{
+            'channel': jsonChannel
+          });
+      Map valueMap = json.decode(data);
+      bool isSuccess = valueMap["isSuccess"];
+      if (isSuccess) {
+        var channel = BlaChannel.fromJson(json.decode(valueMap["result"]));
+        return channel;
+      } else {
+        throw valueMap["message"];
+      }
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
   Future<bool> sendStartTyping(String channelId) async {
     try {
       dynamic data = await _channel
