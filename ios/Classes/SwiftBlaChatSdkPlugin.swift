@@ -134,7 +134,7 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
         case SEARCH_CHANNELS:
             if let query = arguments["query"] as? String
             {
-                BlaChatSDK.shareInstance.searchChannels(query: "Channel") { (channels, error) in
+                BlaChatSDK.shareInstance.searchChannels(query: query) { (channels, error) in
                     if let err = error {
                         let dict: [String: Any] = ["isSuccess": false, "message": err.localizedDescription];
                         let json = try! JSONSerialization.data(withJSONObject: dict)

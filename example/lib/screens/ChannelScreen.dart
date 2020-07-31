@@ -78,8 +78,9 @@ class ChannelScreenState extends State<ChannelScreen> {
       customData["test number"] = 1;
 //      var result = await BlaChatSdk.instance.createMessage("text", channel.id, BlaMessageType.TEXT, null);
 //      print("call back " + result.toString());
-       var test = await BlaChatSdk.instance.deleteMessage(channel.lastMessage);
-       print("haha " + test.toString());
+//       var test = await BlaChatSdk.instance.deleteMessage(channel.lastMessage);
+      var test = await BlaChatSdk.instance.searchChannels("Lớp");
+//       print("haha " + test.toString());
     } catch (e) {
       print("error test " + e.toString());
     }
