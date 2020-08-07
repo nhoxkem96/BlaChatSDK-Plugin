@@ -666,7 +666,7 @@ class BlaChatSdk {
       bool isSuccess = valueMap["isSuccess"];
       bool result = valueMap["result"];
       if (isSuccess) {
-        return result;
+        return true;
       } else {
         throw valueMap["message"];
       }
