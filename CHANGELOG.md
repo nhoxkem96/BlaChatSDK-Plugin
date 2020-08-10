@@ -69,3 +69,12 @@ TODO: Fix bug
 
 ## 0.0.23
 TODO: Fix bug
+
+## 0.0.24
+TODO: Fix bug
+
+## 0.0.25
+TODO: Fix bug
+
+## 0.1.1
+TODO: Fix bug
