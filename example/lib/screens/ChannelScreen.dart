@@ -40,6 +40,8 @@ class ChannelScreenState extends State<ChannelScreen> {
       print("on update channel ");
     }, onDeleteChannel: (String channelId) {
       print("delete channel");
+    }, onNewChannel: (BlaChannel channel) {
+          print("on new channel");
     }));
 
     await BlaChatSdk.instance

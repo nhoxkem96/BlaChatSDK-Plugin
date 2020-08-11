@@ -269,11 +269,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
           }
         })
       } catch (e: Exception) {
-        val dict = HashMap<String, Any>()
-        dict["isSuccess"] = false
-        dict["message"] = e.toString()
-        val jsonString = myGson.toJson(dict);
-        result.success(jsonString)
+        this@BlaChatSdkPlugin.context?.runOnUiThread {
+          val dict = HashMap<String, Any>()
+          dict["isSuccess"] = false
+          dict["message"] = e.toString()
+          val jsonString = myGson.toJson(dict);
+          result.success(jsonString)
+        }
       }
     } else if (call.method == GET_USERS_IN_CHANNEL) {
       try {
@@ -304,11 +306,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
           }
         })
       } catch (e: Exception) {
-        val dict = HashMap<String, Any>()
-        dict["isSuccess"] = false
-        dict["message"] = e.toString()
-        val jsonString = myGson.toJson(dict);
-        result.success(jsonString)
+        this@BlaChatSdkPlugin.context?.runOnUiThread {
+          val dict = HashMap<String, Any>()
+          dict["isSuccess"] = false
+          dict["message"] = e.toString()
+          val jsonString = myGson.toJson(dict);
+          result.success(jsonString)
+        }
       }
     } else if (call.method == GET_USERS) {
       try {
@@ -340,11 +344,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
           }
         })
       } catch (e: Exception) {
-        val dict = HashMap<String, Any>()
-        dict["isSuccess"] = false
-        dict["message"] = e.toString()
-        val jsonString = myGson.toJson(dict);
-        result.success(jsonString)
+        this@BlaChatSdkPlugin.context?.runOnUiThread {
+          val dict = HashMap<String, Any>()
+          dict["isSuccess"] = false
+          dict["message"] = e.toString()
+          val jsonString = myGson.toJson(dict);
+          result.success(jsonString)
+        }
       }
     } else if (call.method == GET_MESSAGES) {
       try {
@@ -373,11 +379,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
           }
         })
       } catch (e: Exception) {
-        val dict = HashMap<String, Any>()
-        dict["isSuccess"] = false
-        dict["message"] = e.toString()
-        val jsonString = myGson.toJson(dict);
-        result.success(jsonString)
+        this@BlaChatSdkPlugin.context?.runOnUiThread {
+          val dict = HashMap<String, Any>()
+          dict["isSuccess"] = false
+          dict["message"] = e.toString()
+          val jsonString = myGson.toJson(dict);
+          result.success(jsonString)
+        }
       }
     } else if (call.method == CREATE_CHANNEL) {
       try {
@@ -414,11 +422,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
           }
         })
       } catch (e: Exception) {
-        val dict = HashMap<String, Any>()
-        dict["isSuccess"] = false
-        dict["message"] = e.toString()
-        val jsonString = myGson.toJson(dict);
-        result.success(jsonString)
+        this@BlaChatSdkPlugin.context?.runOnUiThread {
+          val dict = HashMap<String, Any>()
+          dict["isSuccess"] = false
+          dict["message"] = e.toString()
+          val jsonString = myGson.toJson(dict);
+          result.success(jsonString)
+        }
       }
     } else if (call.method == UPDATE_CHANNEL) {
       try {
@@ -447,11 +457,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
           }
         })
       } catch (e: Exception) {
-        val dict = HashMap<String, Any>()
-        dict["isSuccess"] = false
-        dict["message"] = e.toString()
-        val jsonString = myGson.toJson(dict);
-        result.success(jsonString)
+        this@BlaChatSdkPlugin.context?.runOnUiThread {
+          val dict = HashMap<String, Any>()
+          dict["isSuccess"] = false
+          dict["message"] = e.toString()
+          val jsonString = myGson.toJson(dict);
+          result.success(jsonString)
+        }
       }
     } else if (call.method == DELETE_CHANNEL) {
       try {
@@ -480,11 +492,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
           }
         })
       } catch (e: Exception) {
-        val dict = HashMap<String, Any>()
-        dict["isSuccess"] = false
-        dict["message"] = e.toString()
-        val jsonString = myGson.toJson(dict);
-        result.success(jsonString)
+        this@BlaChatSdkPlugin.context?.runOnUiThread {
+          val dict = HashMap<String, Any>()
+          dict["isSuccess"] = false
+          dict["message"] = e.toString()
+          val jsonString = myGson.toJson(dict);
+          result.success(jsonString)
+        }
       }
     } else if (call.method == SEND_START_TYPING) {
       try {
@@ -512,11 +526,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
           }
         })
       } catch (e: Exception) {
-        val dict = HashMap<String, Any>()
-        dict["isSuccess"] = false
-        dict["message"] = e.toString()
-        val jsonString = myGson.toJson(dict);
-        result.success(jsonString)
+        this@BlaChatSdkPlugin.context?.runOnUiThread {
+          val dict = HashMap<String, Any>()
+          dict["isSuccess"] = false
+          dict["message"] = e.toString()
+          val jsonString = myGson.toJson(dict);
+          result.success(jsonString)
+        }
       }
     } else if (call.method == SEND_STOP_TYPING) {
       try {
@@ -543,11 +559,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
           }
         })
       } catch (e: Exception) {
-        val dict = HashMap<String, Any>()
-        dict["isSuccess"] = false
-        dict["message"] = e.toString()
-        val jsonString = myGson.toJson(dict);
-        result.success(jsonString)
+        this@BlaChatSdkPlugin.context?.runOnUiThread {
+          val dict = HashMap<String, Any>()
+          dict["isSuccess"] = false
+          dict["message"] = e.toString()
+          val jsonString = myGson.toJson(dict);
+          result.success(jsonString)
+        }
       }
     } else if (call.method == MARK_SEEN_MESSAGE) {
       try {
@@ -576,11 +594,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
           }
         })
       } catch (e: Exception) {
-        val dict = HashMap<String, Any>()
-        dict["isSuccess"] = false
-        dict["message"] = e.toString()
-        val jsonString = myGson.toJson(dict);
-        result.success(jsonString)
+        this@BlaChatSdkPlugin.context?.runOnUiThread {
+          val dict = HashMap<String, Any>()
+          dict["isSuccess"] = false
+          dict["message"] = e.toString()
+          val jsonString = myGson.toJson(dict);
+          result.success(jsonString)
+        }
       }
     } else if (call.method == MARK_RECEIVE_MESSAGE) {
       try {
@@ -609,11 +629,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
           }
         })
       } catch (e: Exception) {
-        val dict = HashMap<String, Any>()
-        dict["isSuccess"] = false
-        dict["message"] = e.toString()
-        val jsonString = myGson.toJson(dict);
-        result.success(jsonString)
+        this@BlaChatSdkPlugin.context?.runOnUiThread {
+          val dict = HashMap<String, Any>()
+          dict["isSuccess"] = false
+          dict["message"] = e.toString()
+          val jsonString = myGson.toJson(dict);
+          result.success(jsonString)
+        }
       }
     } else if (call.method == CREATE_MESSAGE) {
       try {
@@ -651,11 +673,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
           }
         })
       } catch (e: Exception) {
-        val dict = HashMap<String, Any>()
-        dict["isSuccess"] = false
-        dict["message"] = e.toString()
-        val jsonString = Gson().toJson(dict);
-        result.success(jsonString)
+        this@BlaChatSdkPlugin.context?.runOnUiThread {
+          val dict = HashMap<String, Any>()
+          dict["isSuccess"] = false
+          dict["message"] = e.toString()
+          val jsonString = myGson.toJson(dict);
+          result.success(jsonString)
+        }
       }
     } else if (call.method == UPDATE_MESSAGE) {
       try {
@@ -684,11 +708,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
           }
         })
       } catch (e: Exception) {
-        val dict = HashMap<String, Any>()
-        dict["isSuccess"] = false
-        dict["message"] = e.toString()
-        val jsonString = myGson.toJson(dict);
-        result.success(jsonString)
+        this@BlaChatSdkPlugin.context?.runOnUiThread {
+          val dict = HashMap<String, Any>()
+          dict["isSuccess"] = false
+          dict["message"] = e.toString()
+          val jsonString = myGson.toJson(dict);
+          result.success(jsonString)
+        }
       }
     } else if (call.method == DELETE_MESSAGE) {
       try {
@@ -717,11 +743,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
           }
         })
       } catch (e: Exception) {
-        val dict = HashMap<String, Any>()
-        dict["isSuccess"] = false
-        dict["message"] = e.toString()
-        val jsonString = myGson.toJson(dict);
-        result.success(jsonString)
+        this@BlaChatSdkPlugin.context?.runOnUiThread {
+          val dict = HashMap<String, Any>()
+          dict["isSuccess"] = false
+          dict["message"] = e.toString()
+          val jsonString = myGson.toJson(dict);
+          result.success(jsonString)
+        }
       }
     } else if (call.method == INVITE_USER_TO_CHANNEL) {
       try {
@@ -751,11 +779,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
           }
         })
       } catch (e: Exception) {
-        val dict = HashMap<String, Any>()
-        dict["isSuccess"] = false
-        dict["message"] = e.toString()
-        val jsonString = myGson.toJson(dict);
-        result.success(jsonString)
+        this@BlaChatSdkPlugin.context?.runOnUiThread {
+          val dict = HashMap<String, Any>()
+          dict["isSuccess"] = false
+          dict["message"] = e.toString()
+          val jsonString = myGson.toJson(dict);
+          result.success(jsonString)
+        }
       }
     } else if (call.method == REMOVE_USER_FROM_CHANNEL) {
       try {
@@ -784,11 +814,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
           }
         })
       } catch (e: Exception) {
-        val dict = HashMap<String, Any>()
-        dict["isSuccess"] = false
-        dict["message"] = e.toString()
-        val jsonString = myGson.toJson(dict);
-        result.success(jsonString)
+        this@BlaChatSdkPlugin.context?.runOnUiThread {
+          val dict = HashMap<String, Any>()
+          dict["isSuccess"] = false
+          dict["message"] = e.toString()
+          val jsonString = myGson.toJson(dict);
+          result.success(jsonString)
+        }
       }
     } else if (call.method == GET_USER_PRESENCE) {
       try {
@@ -812,11 +844,13 @@ class BlaChatSdkPlugin : MethodCallHandler {
           }
         })
       } catch(e: Exception) {
-        val dict = HashMap<kotlin.String, kotlin.Any>()
-        dict["isSuccess"] = false
-        dict["message"] = e.toString()
-        val jsonString = myGson.toJson(dict);
-        result.success(jsonString)
+        this@BlaChatSdkPlugin.context?.runOnUiThread {
+          val dict = HashMap<String, Any>()
+          dict["isSuccess"] = false
+          dict["message"] = e.toString()
+          val jsonString = myGson.toJson(dict);
+          result.success(jsonString)
+        }
       }
     } else if (call.method == SEARCH_CHANNELS) {
       try {
@@ -842,20 +876,38 @@ class BlaChatSdkPlugin : MethodCallHandler {
 
         })
       } catch (e: Exception) {
-        result.error("EXCEPTION", e.message, e)
+        this@BlaChatSdkPlugin.context?.runOnUiThread {
+          val dict = HashMap<String, Any>()
+          dict["isSuccess"] = false
+          dict["message"] = e.toString()
+          val jsonString = myGson.toJson(dict);
+          result.success(jsonString)
+        }
       }
     } else if (call.method == UPDATE_FCM_TOKEN) {
       try {
         val fcmToken = arguments["fcmToken"] as String
         BlaChatSDK.getInstance().updateFCMToken(fcmToken);
       } catch (e: Exception) {
-        result.error("EXCEPTION", e.message, e)
+        this@BlaChatSdkPlugin.context?.runOnUiThread {
+          val dict = HashMap<String, Any>()
+          dict["isSuccess"] = false
+          dict["message"] = e.toString()
+          val jsonString = myGson.toJson(dict);
+          result.success(jsonString)
+        }
       }
     } else if (call.method == LOGOUT_BLACHATSDK) {
       try {
         BlaChatSDK.getInstance().logout()
       } catch (e: Exception) {
-        result.error("EXCEPTION", e.message, e)
+        this@BlaChatSdkPlugin.context?.runOnUiThread {
+          val dict = HashMap<String, Any>()
+          dict["isSuccess"] = false
+          dict["message"] = e.toString()
+          val jsonString = myGson.toJson(dict);
+          result.success(jsonString)
+        }
       }
     } else {
       result.notImplemented()
