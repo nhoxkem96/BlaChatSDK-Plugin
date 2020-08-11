@@ -404,7 +404,9 @@ class BlaChatSdk {
 
   Future<BlaChannel> deleteChannel(BlaChannel channel) async {
     try {
-      var jsonChannel = jsonEncode(channel.toJson());
+      var dataChannel = channel.toJson();
+      dataChannel.remove("lastMessage");
+      var jsonChannel = jsonEncode(dataChannel);
       dynamic data = await _channel.invokeMethod(BlaConstants.DELETE_CHANNEL,
           <String, dynamic>{
             'channel': jsonChannel
@@ -568,11 +570,20 @@ class BlaChatSdk {
 
   Future<BlaMessage> deleteMessage(BlaMessage message) async {
     try {
-      var jsonMessage = jsonEncode(message.toJson());
+      message.seenBy = [];
+      message.receivedBy = [];
+      var mapData = message.toJson();
+      mapData.remove("receivedBy");
+      mapData.remove("seenBy");
+      var jsonMessage = jsonEncode(mapData);
+      print("dart: deleteMessage");
+      print(jsonMessage);
+
       dynamic data = await _channel
           .invokeMethod(BlaConstants.DELETE_MESSAGE, <String, dynamic>{
         'message': jsonMessage
       });
+      print(data);
       Map valueMap = json.decode(data);
       bool isSuccess = valueMap["isSuccess"];
       if (isSuccess) {
