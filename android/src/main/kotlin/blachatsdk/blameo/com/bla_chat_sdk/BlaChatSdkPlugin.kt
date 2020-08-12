@@ -2,23 +2,45 @@ package blachatsdk.blameo.com.bla_chat_sdk
 
 import android.app.Activity
 import android.content.Context
-import android.text.TextUtils
 import android.util.Log
-import com.blameo.chatsdk.blachat.*
+import com.blameo.chatsdk.blachat.BlaChatSDK
+import com.blameo.chatsdk.blachat.Callback
+import com.blameo.chatsdk.blachat.ChannelEventListener
+import com.blameo.chatsdk.blachat.MessagesListener
 import com.blameo.chatsdk.models.bla.*
+import com.blameo.chatsdk.models.entities.Message
 import com.blameo.chatsdk.utils.GsonUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
+import com.google.gson.TypeAdapter
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonWriter
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
-import java.lang.Exception
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
+
+class MyDateTypeAdapter(): TypeAdapter<Date>() {
+  private var simpleDateFormat: SimpleDateFormat? = null
+
+  init {
+    simpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+  }
+
+  override fun write(out: JsonWriter?, value: Date?) {
+    if (value == null) out!!.nullValue() else out!!.value(simpleDateFormat!!.format(value))
+  }
+
+  override fun read(`in`: JsonReader?): Date {
+    return if (`in` != null) Date(`in`.nextLong()) else Date()
+  }
+
+}
 
 
 class BlaChatSdkPlugin : MethodCallHandler {
@@ -57,7 +79,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
   val SHARED_PREFERENCES_NAME = "shared_preference"
   private var context: Activity? = null
   private var channel: MethodChannel? = null
-  var myGson = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create()
+  var myGson = GsonBuilder().registerTypeAdapter(Date::class.java, MyDateTypeAdapter()).setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create()
 
   companion object {
     @JvmStatic
@@ -437,6 +459,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
 
         BlaChatSDK.getInstance().updateChannel(channel, object : Callback<BlaChannel> {
           override fun onSuccess(p0: BlaChannel?) {
+            p0?.toString();
             this@BlaChatSdkPlugin.context?.runOnUiThread {
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = true
@@ -473,6 +496,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
         BlaChatSDK.getInstance().deleteChannel(channel, object : Callback<BlaChannel> {
           override fun onSuccess(p0: BlaChannel?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread {
+
               val dict = HashMap<String, Any>()
               dict["isSuccess"] = true
               dict["result"] = myGson.toJson(p0)
@@ -720,7 +744,6 @@ class BlaChatSdkPlugin : MethodCallHandler {
       try {
         val jsonMessage = arguments["message"] as String
         val message = myGson.fromJson(jsonMessage, BlaMessage::class.java)
-
         BlaChatSDK.getInstance().deleteMessage(message, object : Callback<BlaMessage> {
           override fun onSuccess(p0: BlaMessage?) {
             this@BlaChatSdkPlugin.context?.runOnUiThread {
