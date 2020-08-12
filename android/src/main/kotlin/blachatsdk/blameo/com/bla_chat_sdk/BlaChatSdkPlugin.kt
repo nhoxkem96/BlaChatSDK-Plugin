@@ -176,6 +176,7 @@ class BlaChatSdkPlugin : MethodCallHandler {
           this@BlaChatSdkPlugin.context?.runOnUiThread {
             var dict = HashMap<String, Any>()
             dict["channel"] = myGson.toJson(p0)
+            Log.e("onUpdateChannel", myGson.toJson(dict))
             this@BlaChatSdkPlugin.channel!!.invokeMethod("onUpdateChannel", dict)
           }
         }
