@@ -134,8 +134,6 @@ class BlaChatSdk {
           }
           case "onUpdateChannel": {
             var channel = BlaChannel.fromJson(json.decode(call.arguments["channel"]));
-            print("onUpdateChannel_Dark");
-            print(channel.toJson());
             for (ChannelListener listener in channelListeners) {
               listener.onUpdateChannel(channel);
             }
