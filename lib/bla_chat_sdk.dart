@@ -76,6 +76,7 @@ class BlaChatSdk {
         'token': token,
       });
       _channel.setMethodCallHandler((call) async {
+        print("call method event:  ${call.method}");
         switch (call.method) {
           case "onNewMessage": {
             var message = BlaMessage.fromJson(json.decode(call.arguments["message"]));

@@ -34,7 +34,7 @@ class _MyAppState extends State<MyApp> {
 
   void loginUser1(BuildContext context) async {
     String userId = "a883f925-e8b8-48df-a9f3-c5ed988018b7";
-    String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaGFubmVsIjoiJGNoYXQ6YTg4M2Y5MjUtZThiOC00OGRmLWE5ZjMtYzVlZDk4ODAxOGI3IiwiY2xpZW50IjoiYTg4M2Y5MjUtZThiOC00OGRmLWE5ZjMtYzVlZDk4ODAxOGI3IiwiZXhwIjoxNTk5Mzg2Njc0LCJzdWIiOiJhODgzZjkyNS1lOGI4LTQ4ZGYtYTlmMy1jNWVkOTg4MDE4YjciLCJ1c2VySWQiOiJhODgzZjkyNS1lOGI4LTQ4ZGYtYTlmMy1jNWVkOTg4MDE4YjcifQ.ppA5uQm1v_5Tlp29mrYOHPSNKhoiMSxEFGmt26YGKXQ";
+    String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaGFubmVsIjoiJGNoYXQ6YTg4M2Y5MjUtZThiOC00OGRmLWE5ZjMtYzVlZDk4ODAxOGI3IiwiY2xpZW50IjoiYTg4M2Y5MjUtZThiOC00OGRmLWE5ZjMtYzVlZDk4ODAxOGI3IiwiZXhwIjoxNTk5OTA3MzMzLCJzdWIiOiJhODgzZjkyNS1lOGI4LTQ4ZGYtYTlmMy1jNWVkOTg4MDE4YjciLCJ1c2VySWQiOiJhODgzZjkyNS1lOGI4LTQ4ZGYtYTlmMy1jNWVkOTg4MDE4YjcifQ.yVIa9E2SnFTi6RjpntzJQXIzqcckkc2_gTSUQ8SYCaE";
     var test = await BlaChatSdk.instance.initBlaChatSDK(userId, token);
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => ChannelScreen(userId)));

@@ -42,6 +42,10 @@ class ChannelScreenState extends State<ChannelScreen> {
       print("delete channel");
     }, onNewChannel: (BlaChannel channel) {
           print("on new channel");
+    }, onUserSeenMessage: (channel, user, message) {
+      print("onUserSeenMessage " + message.content);
+    }, onUserReceiveMessage: (channel, user, message) {
+      print("onUserReceiveMessage " + message.content);
     }));
 
     await BlaChatSdk.instance
@@ -49,6 +53,10 @@ class ChannelScreenState extends State<ChannelScreen> {
       print("have new message in channel screen: " + message.content);
     }, onDeleteMessage: (messageId) {
       print('delete message id');
+    }, onUserSeen: (message, user, time) {
+      print("onUserSeen " + message.content);
+    }, onUserReceive: (message, user, time) {
+          print("onUserReceive " + message.content);
     }));
     await BlaChatSdk.instance
         .addPresenceListener(new PresenceListener(onUpdate: (users) {
