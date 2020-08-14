@@ -20,6 +20,7 @@ class BlaMessage {
   List<BlaUser> seenBy;
 
   BlaMessage.fromJson(Map<String, dynamic> data) {
+    print("date ${data["createdAt"]}");
     id = data["id"];
     authorId = data["authorId"];
     channelId = data["channelId"];

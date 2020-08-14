@@ -76,7 +76,6 @@ class BlaChatSdk {
         'token': token,
       });
       _channel.setMethodCallHandler((call) async {
-        print("call method event:  ${call.method}");
         switch (call.method) {
           case "onNewMessage": {
             var message = BlaMessage.fromJson(json.decode(call.arguments["message"]));
@@ -577,14 +576,11 @@ class BlaChatSdk {
       mapData.remove("receivedBy");
       mapData.remove("seenBy");
       var jsonMessage = jsonEncode(mapData);
-      print("dart: deleteMessage");
-      print(jsonMessage);
 
       dynamic data = await _channel
           .invokeMethod(BlaConstants.DELETE_MESSAGE, <String, dynamic>{
         'message': jsonMessage
       });
-      print(data);
       Map valueMap = json.decode(data);
       bool isSuccess = valueMap["isSuccess"];
       if (isSuccess) {

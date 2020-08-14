@@ -98,5 +98,8 @@ TODO: Fix bug
 ## 0.0.32
 TODO: Fix bug
 
+## 0.0.33
+TODO: Fix bug
+
 ## 0.1.1
 TODO: Fix bug

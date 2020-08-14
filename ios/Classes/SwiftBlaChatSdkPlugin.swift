@@ -838,17 +838,17 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         let jsonEncoder = JSONEncoder()
         jsonEncoder.dateEncodingStrategy = .formatted(formatter)
-        
+
         let jsonData1 = try! jsonEncoder.encode(message)
         let jsonResult1 = String(data: jsonData1, encoding: String.Encoding.utf8)
-        
+
         let jsonData2 = try! jsonEncoder.encode(user)
         let jsonResult2 = String(data: jsonData2, encoding: String.Encoding.utf8)
-        
+
         self._channel.invokeMethod("onUserSeen", arguments: [
             "message": jsonResult1!,
             "user": jsonResult2!,
-            "seenAt": seenAt.timeIntervalSince1970
+            "seenAt": Int(seenAt.timeIntervalSince1970)
         ]);
     }
     
@@ -867,7 +867,7 @@ public class SwiftBlaChatSdkPlugin: NSObject, FlutterPlugin, BlaPresenceListener
         self._channel.invokeMethod("onUserReceive", arguments: [
             "message": jsonResult1!,
             "user": jsonResult2!,
-            "receivedAt": receivedAt.timeIntervalSince1970
+            "receivedAt": Int(receivedAt.timeIntervalSince1970)
         ]);
     }
     
